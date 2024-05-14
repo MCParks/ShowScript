@@ -1,7 +1,10 @@
+
 # ShowScript
 
 ShowScript is a Spigot plugin that defines a programming language (v2 is backed by [YAML](https://yaml.org/) and v3 is a [Groovy DSL](http://docs.groovy-lang.org/docs/latest/html/documentation/core-domain-specific-languages.html)) that allows console commands and other actions to be scheduled to run at specified timecodes.
 A file that defines a series of timecodes and actions is called a "Show."
+
+Join the ShowScript Discord server for help & support: https://discord.gg/yNX8QdKNMA
 
 ## Example
 
