@@ -74,9 +74,11 @@ public class Main extends JavaPlugin implements Listener {
   @Override
   public void onEnable() {
     DebugLogger.setLogging(true);
-    this.rbFolder.mkdir();
     setupCloud();
+
+    // Internally, this plugin also handles a legacy command. Ask Ryan for the story on why.
     /* // <INTERNAL>
+    this.rbFolder.mkdir();
     getCommand("rb").setExecutor(new Rebuild());
     // </INTERNAL> */
     Shows commandHandler = new Shows(this, this);
@@ -99,6 +101,7 @@ public class Main extends JavaPlugin implements Listener {
         100L, 1L);
 
 
+    // We evaluate _something_ to instantiate a GroovyShell now so it's cached before shows start running
     GroovyShowConfig.evaluator.evaluateExpression("println 'Hello, World! Warming up the Groovy engine.'");
 
   }
