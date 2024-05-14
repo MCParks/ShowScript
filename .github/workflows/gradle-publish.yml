@@ -7,6 +7,11 @@
 
 name: Gradle Package
 
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
 on:
   release:
     types: [created]
