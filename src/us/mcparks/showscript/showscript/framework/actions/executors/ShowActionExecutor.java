@@ -2,7 +2,9 @@ package us.mcparks.showscript.showscript.framework.actions.executors;
 
 import us.mcparks.showscript.util.DebugLogger;
 import us.mcparks.showscript.util.Lag;
+/* // <INTERNAL>
 import us.mcparks.showscript.Rebuild;
+// </INTERNAL> */
 import us.mcparks.showscript.showscript.framework.ShowArgs;
 import us.mcparks.showscript.showscript.framework.TimecodeShowConfig;
 import us.mcparks.showscript.showscript.framework.actions.ShowAction;
@@ -43,9 +45,10 @@ public abstract class ShowActionExecutor {
 
     protected void build(String name) {
         DebugLogger.log(scheduler.getName(), "build: " + name);
-
+        /* // <INTERNAL>
         Rebuild rb = new Rebuild();
         rb.buildRegion(name);
+        // </INTERNAL> */
     }
 
     protected void cmd(String cmd) throws Exception {
