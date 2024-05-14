@@ -82,12 +82,13 @@ publishing {
     publications {
         gpr(MavenPublication) {
             from components.java
+            artifact shadowJar
         }
     }
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+            url = uri("https://maven.pkg.github.com/MCParks/ShowScript")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
