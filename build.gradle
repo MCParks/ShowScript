@@ -77,7 +77,6 @@ archivesBaseName = 'showscript'
 shadowJar.archiveFileName = "showscript.jar"
 build.dependsOn(shadowJar)
 jar.enabled = false
-rootProject.name = "showscript"
 
 publishing {
     publications {
