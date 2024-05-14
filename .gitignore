@@ -144,3 +144,6 @@ dependency-reduced-pom.xml
 /build
 
 .vscode/**/*
+
+settings.xml
+toolchains.xml
