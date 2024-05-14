@@ -74,9 +74,9 @@ version = '1.12-1-' + gitVersion()
 description = 'ShowScript'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = 'ShowScript'
-jar.archiveFileName = "ShowScript.jar"
-shadowJar.archiveFileName = "ShowScript-all.jar"
-
+shadowJar.archiveFileName = "ShowScript.jar"
+build.dependsOn(shadowJar)
+jar.enabled = false
 
 publishing {
     publications {
@@ -95,3 +95,4 @@ publishing {
         }
     }
 }
+
