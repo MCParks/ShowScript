@@ -73,21 +73,22 @@ group = 'us.mcparks'
 version = '1.12-1-' + gitVersion()
 description = 'ShowScript'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-archivesBaseName = 'ShowScript'
-shadowJar.archiveFileName = "ShowScript.jar"
+archivesBaseName = 'showscript'
+shadowJar.archiveFileName = "showscript.jar"
 build.dependsOn(shadowJar)
 jar.enabled = false
+rootProject.name = "showscript"
 
 publishing {
     publications {
         gpr(MavenPublication) {
-            artifact file("build/libs/ShowScript.jar")
+            artifact file("build/libs/showscript.jar")
         }
     }
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/MCParks/ShowScript")
+            url = uri("https://maven.pkg.github.com/mcparks/showscript")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
