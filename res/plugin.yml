@@ -1,0 +1,8 @@
+name: ShowsScript
+main: us.mcparks.showscript.Main
+version: @version@
+description: A programming language developed by MCParks for scheduling commands to run at specified timecodes
+author: RyanHecht_
+softdepend: [WorldGuard]
+commands:
+  rb:
