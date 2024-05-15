@@ -13,13 +13,13 @@ ENV LEVEL_TYPE=FLAT
 ENV MOTD=ShowScriptSandbox
 ENV ALLOW_NETHER=FALSE
 
-# Install OpenJDK 21
+# Install OpenJDK 8
 RUN apt-get update && \
-    apt-get install -y openjdk-21-jdk && \
+    apt-get install -y openjdk-8-jdk && \
     apt-get clean;
 
 # Set JAVA_HOME environment variable
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Expose the Minecraft server port
