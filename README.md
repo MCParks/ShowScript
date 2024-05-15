@@ -142,20 +142,20 @@ time1163:
 
 All of these commands require the `castmember` permission:
 
-- `show start <showName>`: Starts a specific show. Replace `<showName>` with the name of the show you want to start (without the file extension). This command also accepts optional flags:
+- `/show start <showName>`: Starts a specific show. Replace `<showName>` with the name of the show you want to start (without the file extension). This command also accepts optional flags:
   - `--log`: Enables logging of actions. The sender of the command will receive chat messages whenever a Show Action executes.
   - `--async`: Runs the show asynchronously. Individual Show Actions will still run synchronously.
   - `--startAt <timecode>`: Specifies the timecode (in ticks) at which to start the show.
   - `--args`: Specifies additional arguments for the show, if the show requires them
   Usage: `show start <showName> [--log] [--async] [--startAt <timecode>] [--args <arguments>]`.
 
-- `show stop <showName>`: Stops all instances of a specific show. Replace `<showName>` with the name of the show you want to stop. 
+- `/show stop <showName>`: Stops all instances of a specific show. Replace `<showName>` with the name of the show you want to stop. 
 
-- `show toggledebug`: Toggles the debug mode. It doesn't require any arguments. 
+- `/show toggledebug`: Toggles the debug mode. It doesn't require any arguments. 
 
-- `show stopall`: Stops all currently running shows. 
+- `/show stopall`: Stops all currently running shows. 
 
-- `show list`: Lists all currently running shows. 
+- `/show list`: Lists all currently running shows. 
 
 
 ## Licensing
