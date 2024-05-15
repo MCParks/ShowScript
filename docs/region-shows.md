@@ -24,16 +24,16 @@ cleanup: 'myProject/queue/waving_animatronic/cleanup'
 
 Region Show Schema files must end in `_regionshowschema.yml`. 
 - `region` refers to the region that the region for which the show listener should be keeping track of player entrances/exits.
-- `setup` refers to the show that should be run when the first player enters `region` (i.e. when the number of players in `region` goes from 0 to 1). See [`setup` Show Example](/Technicians/RegionShows#setup-show-example) for more information.
-- `loop.name` refers to the show that should continue playing on loop as long as there are players `region`. See [`loop` Show Example](/Technicians/RegionShows#loop-show-example) for more information.
-		- `loop.delay` exists because some commands take time to fully execute, and you don't want to have your `loop` show start over while a long-running command is still executing. We cover this more in [`loop` Show Example](/Technicians/RegionShows#loop-show-example). The `loop.delay` field is optional and defaults to `0`. If you don't a delay between instances of your loop show, your schema can look like:
+- `setup` refers to the show that should be run when the first player enters `region` (i.e. when the number of players in `region` goes from 0 to 1). See [`setup` Show Example](#setup-show-example) for more information.
+- `loop.name` refers to the show that should continue playing on loop as long as there are players `region`. See [`loop` Show Example](#loop-show-example) for more information.
+		- `loop.delay` exists because some commands take time to fully execute, and you don't want to have your `loop` show start over while a long-running command is still executing. We cover this more in [`loop` Show Example](#loop-show-example). The `loop.delay` field is optional and defaults to `0`. If you don't a delay between instances of your loop show, your schema can look like:
 ```yaml
 region: "myRegion"
 setup: 'myProject/queue/waving_animatronic/setup'
 loop: 'path/to/loopShow/that/doesnt/need/a/delay'
 cleanup: 'myProject/queue/waving_animatronic/cleanup'
 ```
-- `shows.cleanup` refers to the show that should be run when the last player leaves `region` (i.e. when the number of players in `region` goes from 1 to 0). See [`cleanup` Show Example](/Technicians/RegionShows#cleanup-show-example) for more information.
+- `shows.cleanup` refers to the show that should be run when the last player leaves `region` (i.e. when the number of players in `region` goes from 1 to 0). See [`cleanup` Show Example](#cleanup-show-example) for more information.
 
 
 ### `setup` Show Example
@@ -118,7 +118,7 @@ cleanup: 'path/to/cleanup'
 ```
 
 ### Setup Delay
-Sometimes, you might want to a delay between when your [`setup` show](/Technicians/RegionShows#setup-show-example) completes and when your [`loop` show](/Technicians/RegionShows#loop-show-example) starts looping. You can accomplish this in the Schema file very similarly to how you add a delay for your loop show:
+Sometimes, you might want to a delay between when your [`setup` show](#setup-show-example) completes and when your [`loop` show](#loop-show-example) starts looping. You can accomplish this in the Schema file very similarly to how you add a delay for your loop show:
 ```yaml
 region: 'testregion'
 setup:
