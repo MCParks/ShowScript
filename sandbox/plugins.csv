@@ -1,3 +1,3 @@
-PluginName,DirectDownloadURL
-EssentialsX,https://example.com/essentialsx.jar
-WorldEdit,https://example.com/worldedit.jar
+EssentialsX,https://ci.ender.zone/job/EssentialsX/lastSuccessfulBuild/artifact/jars/EssentialsX-2.21.0-dev+81-cde7184.jar
+WorldEdit,https://dev.bukkit.org/projects/worldedit/files/2597538/download
+WorldGuard,https://dev.bukkit.org/projects/worldguard/files/2610618/download

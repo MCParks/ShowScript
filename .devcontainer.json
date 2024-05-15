@@ -1,0 +1,34 @@
+{
+  "name": "ShowScript Development",
+  "build": {
+    "dockerfile": "sandbox/Dockerfile",
+    "args": {
+      "VARIANT": "11",
+      "INSTALL_MAVEN": "true",
+      "INSTALL_GRADLE": "true"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-dependency",
+        "groovy.groovy",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "postCreateCommand": "bash /workspaces/ShowScript/sandbox/scripts/setup-environment.sh",
+  "runArgs": [
+    "--name", "showscript_dev_container",
+    "-p", "25565:25565"
+  ],
+  "forwardPorts": [25565],
+}

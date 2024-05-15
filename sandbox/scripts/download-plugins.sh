@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the plugins directory
-cd /workspaces/showscriptsandbox/plugins
+cd /workspaces/ShowScript/sandbox/server/plugins
 
 # Read each line from the CSV file
 while IFS=, read -r pluginName directDownloadUrl
@@ -14,4 +14,4 @@ do
   else
     echo "$pluginName already exists, skipping download."
   fi
-done < /workspaces/showscriptsandbox/plugins.csv
+done < /workspaces/ShowScript/sandbox/plugins.csv

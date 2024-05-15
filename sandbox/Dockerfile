@@ -20,4 +20,4 @@ EXPOSE 25565
 COPY setup-environment.sh /setup-environment.sh
 RUN chmod +x /setup-environment.sh
 
-ENTRYPOINT [ "/start" ]
+ENTRYPOINT [ "" ]

@@ -7,7 +7,7 @@ cd "$(dirname "$0")/../.."
 ./gradlew build
 
 # Ensure the plugins directory exists
-mkdir -p /workspaces/showscriptsandbox/plugins
+mkdir -p /workspaces/ShowScript/sandbox/server/plugins
 
 # Move the built plugin jar to the plugins directory
-mv build/libs/showscript.jar /workspaces/showscriptsandbox/plugins/
+mv build/libs/showscript.jar /workspaces/ShowScript/sandbox/server/plugins/
