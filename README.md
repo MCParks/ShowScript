@@ -12,6 +12,9 @@ Join the ShowScript Discord server for help & support: https://discord.gg/yNX8Qd
 
 ## Example
 
+A file that defines a series of timecodes and actions is called a "Show." Your shows live in `plugins/ShowScript/Shows`. You may nest your shows in directories; it's considered good practice to do this to organize different projects.
+You can write your shows in Groovy (ShowScript 3), or YAML (ShowScript 2). The YAML syntax of ShowScript 2 might be easier for those unfamiliar with programming to understand, but ShowScript 3 unlocks more capabilities and advanced usage.
+
 ### ShowScript 3 (file ending in `.groovy`)
 
 ```groovy
