@@ -10,6 +10,18 @@ Join the ShowScript Discord server for help & support: https://discord.gg/yNX8Qd
 
 **Currently, ShowScript has only been tested to work on Spigot/Paper 1.12.2. PR's welcome to extend support to other versions!**
 
+
+## Features
+
+- Turn miles of Command Blocks into just one command that's easy to share, extend, and run!
+- [A simple YAML schema]() enabling beginners to easily schedule _any_ commands to run at specified times
+- [A rich Groovy DSL](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md) that brings all the functionality of the YAML schema _and_ allows you to add programming constructs like conditionals, loops, functions, etc
+  - Add [arguments]() to your shows to make them reusable in different situations
+  - Seamlessly interact with [server constructs]() like `Player`s, `Entity`s `Location`s, and more!
+  - Set [global variables]() and [export data and functions]() to share data between shows
+  - [Access any Java class loaded in your Classpath]() for easily extending functionality to custom plugins
+- [Region Shows](https://github.com/MCParks/ShowScript/blob/main/docs/region-shows.md): Have a show loop ambiently as long as there are players in a WorldGuard region
+
 ## Example
 
 A file that defines a series of timecodes and actions is called a "Show." Your shows live in `plugins/ShowScript/Shows`. You may nest your shows in directories; it's considered good practice to do this to organize different projects.
