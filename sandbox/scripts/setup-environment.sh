@@ -11,6 +11,6 @@ bash /workspaces/ShowScript/sandbox/scripts/download-plugins.sh
 # Start the Minecraft server
 cd /workspaces/ShowScript/sandbox
 
-ln -s /data /workspaces/ShowScript/sandbox/server
+ln -s /data /workspaces/ShowScript/sandbox
 
 # Attach the VSCode Console to the Minecraft server
