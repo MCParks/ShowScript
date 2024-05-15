@@ -1,6 +1,12 @@
 #!/bin/bash
 ln -s /data /workspaces/ShowScript/sandbox
 
+
+# Ensure the plugins directory exists
+mkdir -p /workspaces/ShowScript/sandbox/data/plugins
+
+chmod 777 /workspaces/ShowScript/sandbox/data/plugins
+
 # Run script to build ShowScript
 bash /workspaces/ShowScript/sandbox/scripts/build-plugin.sh
 
