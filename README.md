@@ -12,7 +12,7 @@ Join the ShowScript Discord server for help & support: https://discord.gg/yNX8Qd
 
 ## Example
 
-### ShowScript 3
+### ShowScript 3 (file ending in `.groovy`)
 
 ```groovy
 ticks(0) {
@@ -84,7 +84,7 @@ ticks(1163) {
 ```
 
 
-### ShowScript 2
+### ShowScript 2 (file ending in `.yml`)
 ```yaml
 time0:
   - item: 'cmd'
@@ -139,7 +139,7 @@ time1163:
 
 All of these commands require the `castmember` permission:
 
-- `show start <showName>`: Starts a specific show. Replace `<showName>` with the name of the show you want to start. This command also accepts optional flags:
+- `show start <showName>`: Starts a specific show. Replace `<showName>` with the name of the show you want to start (without the file extension). This command also accepts optional flags:
   - `--log`: Enables logging of actions. The sender of the command will receive chat messages whenever a Show Action executes.
   - `--async`: Runs the show asynchronously. Individual Show Actions will still run synchronously.
   - `--startAt <timecode>`: Specifies the timecode (in ticks) at which to start the show.
