@@ -69,28 +69,6 @@ ticks(1010) {
   }
 }
 
-ticks(1076) {
-  text {
-    world = "world"
-    x = -247
-    y = 53
-    z = 759
-    range = 300
-    text = "${blueFairyPrefix}One of them is this:"
-  }
-}
-
-ticks(1110) {
-  text {
-    world = "world"
-    x = -247
-    y = 53
-    z = 759
-    range = 300
-    text = "${blueFairyPrefix}they have the power to make a wish come true."
-  }
-}
-
 ticks(1163) {
   cmd {
     "summon fireworks_rocket -221 70 689 {Motion:[-1.0,10.0,0.0],FireworksItem:{id:fireworks,Count:1,tag:{Fireworks:{Explosions:[{Type:4,Trail:1,Colors:[16776688],FadeColors:[16775387]}]}}}}"
@@ -124,22 +102,6 @@ time967:
 time1010:
   - item: 'text'
     text: '^blueFairyPrefix^they possess a gift or two.'
-    x: -247.0
-    y: 53.0
-    z: 759.0
-    range: 300.0
-    world: world
-time1076:
-  - item: 'text'
-    text: '^blueFairyPrefix^One of them is this,'
-    x: -247.0
-    y: 53.0
-    z: 759.0
-    range: 300.0
-    world: world
-time1110:
-  - item: 'text'
-    text: '^blueFairyPrefix^they have the power to make a wish come true.'
     x: -247.0
     y: 53.0
     z: 759.0
