@@ -16,8 +16,4 @@ ENV ALLOW_NETHER=FALSE
 # Expose the Minecraft server port
 EXPOSE 25565
 
-# Copy the setup script and make it executable
-COPY setup-environment.sh /setup-environment.sh
-RUN chmod +x /setup-environment.sh
-
 ENTRYPOINT [ "" ]
