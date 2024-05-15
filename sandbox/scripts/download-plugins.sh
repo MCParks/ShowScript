@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the plugins directory
-cd /workspaces/ShowScript/sandbox/server/plugins
+cd /workspaces/ShowScript/sandbox/data/plugins
 
 # Read each line from the CSV file
 while IFS=, read -r pluginName directDownloadUrl
