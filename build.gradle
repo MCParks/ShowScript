@@ -73,6 +73,7 @@ group = 'us.mcparks'
 version = '1.12-1-' + gitVersion()
 description = 'ShowScript'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = 'showscript'
 shadowJar.archiveFileName = "showscript.jar"
 build.dependsOn(shadowJar)
@@ -82,6 +83,33 @@ publishing {
     publications {
         gpr(MavenPublication) {
             artifact file("build/libs/showscript.jar")
+            pom {
+                name = "ShowScript"
+                description = "A Spigot plugin and programming language for scheduling commands to run at specified timecodes"
+                url = "https://github.com/MCParks/ShowScript"
+
+                licenses {
+                    license {
+                        // agpl-3.0
+                        name = "GNU Affero General Public License v3.0"
+                        url = "https://www.gnu.org/licenses/agpl-3.0.html"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "MCParks"
+                        name = "MCParks"
+                        email = ""
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:git://github.com/MCParks/ShowScript.git"
+                    developerConnection = "scm:git:ssh://github.com/MCParks/ShowScript.git"
+                    url = "https://github.com/MCParks/ShowScript"
+                }
+            }
         }
     }
     repositories {

@@ -147,3 +147,5 @@ dependency-reduced-pom.xml
 
 settings.xml
 toolchains.xml
+
+/sandbox/data
