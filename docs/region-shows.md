@@ -40,7 +40,7 @@ cleanup: 'myProject/queue/waving_animatronic/cleanup'
 File: `myProject/queue/waving_animatronic/setup.yml`
 ```yaml
 time0:
-	- item: 'cmd'
+  - item: 'cmd'
     cmd: assave recall myProject/wavyboi
 ```
 
@@ -50,8 +50,8 @@ In this setup show, an [`assave`](/Technicians/ArmorStandAnimations#saving-armor
 File: `myProject/queue/waving_animatronic/loop.yml`
 ```yaml
 time0:
-	- item: 'cmd'
-	  cmd: 'asa animatecycle wavyboi -166 53 1103 10 larm 0 0 20 10'
+  - item: 'cmd'
+    cmd: 'asa animatecycle wavyboi -166 53 1103 10 larm 0 0 20 10'
 ```
 
 In this loop show, we find an [asa animate](/Technicians/ArmorStandAnimations#animating-an-armor-stand) command to make our `wavyboi` wave. The loop show is the place to put all the actual "effect" commands that should be running on loop. 
