@@ -25,12 +25,12 @@
       ]
     }
   },
-  "postCreateCommand": "bash /workspaces/ShowScript/sandbox/scripts/setup-environment.sh",
+  "postCreateCommand": "bash sandbox/scripts/setup-environment.sh",
   "runArgs": [
     "--name", "showscript_dev_container",
     "-p", "25565:25565"
   ],
-  "forwardPorts": [25565],
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind",
-  "workspaceFolder": "/workspaces/ShowScript"
+  "forwardPorts": [25565]
+  // "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind",
+  // "workspaceFolder": "/workspaces/ShowScript"
 }
