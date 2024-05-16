@@ -21,7 +21,8 @@
         "vscjava.vscode-java-debug",
         "vscjava.vscode-java-dependency",
         "groovy.groovy",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "fabiospampinato.vscode-terminals"
       ]
     }
   },

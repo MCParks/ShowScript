@@ -1,9 +1,10 @@
 #!/bin/bash
 ln -s /data /workspaces/ShowScript/sandbox
 
-
 # Ensure the plugins directory exists
 mkdir -p /workspaces/ShowScript/sandbox/data/plugins
+
+bash /workspaces/ShowScript/sandbox/scripts/configure-terminals.manager.sh
 
 chmod 777 /workspaces/ShowScript/sandbox/data/plugins
 
@@ -19,5 +20,3 @@ bash /workspaces/ShowScript/sandbox/scripts/download-plugins.sh
 cd /workspaces/ShowScript/sandbox
 
 
-
-# Attach the VSCode Console to the Minecraft server

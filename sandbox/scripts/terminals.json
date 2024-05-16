@@ -1,0 +1,27 @@
+{
+    "autorun": true,
+    "terminals": [
+      {
+        "name": "Minecraft Server",
+        "description": "Runs the Minecraft server",
+        "focus": true,
+        "open": true,
+        "command": "/start"
+      },
+      {
+        "name": "Public IP",
+        "description": "Gets the public IP to connect to the server",
+        "focus": false,
+        "open": true,
+        "command": "bash /workspaces/ShowScript/sandbox/scripts/tunnel-port.sh"
+      },
+      {
+        "name": "bash terminal",
+        "description": "Gets the public IP to connect to the server",
+        "focus": false,
+        "open": true,
+        "command": "bash"
+      }
+      
+    ]
+}
