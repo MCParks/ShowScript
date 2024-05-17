@@ -16,10 +16,10 @@ Join the ShowScript Discord server for help & support: https://discord.gg/yNX8Qd
 - Turn miles of Command Blocks into just one command that's easy to share, extend, and run!
 - [A simple YAML schema]() enabling beginners to easily schedule _any_ commands to run at specified times
 - [A rich Groovy DSL](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md) that brings all the functionality of the YAML schema _and_ allows you to add programming constructs like conditionals, loops, functions, etc
-  - Add [arguments]() to your shows to make them reusable in different situations
-  - Seamlessly interact with [server constructs]() like `Player`s, `Entity`s `Location`s, and more!
-  - Set [global variables]() and [export data and functions]() to share data between shows
-  - [Access any Java class loaded in your Classpath]() for easily extending functionality to custom plugins
+  - Add [arguments](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md#show-arguments) to your shows to make them reusable in different situations
+  - Seamlessly interact with [server constructs](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md#accessing-server-info) like `Player`s, `Entity`s `Location`s, and more!
+  - Set [global variables](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md#global-variables) and [export data and functions](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md#sharing-data-between-shows-export-and-load) to share data between shows
+  - [Access any Java class loaded in your Classpath](https://github.com/MCParks/ShowScript/blob/main/docs/showscript3.md#accessing-information-from-any-plugin) for easily extending functionality to custom plugins
 - [Region Shows](https://github.com/MCParks/ShowScript/blob/main/docs/region-shows.md): Have a show loop ambiently as long as there are players in a WorldGuard region
 
 ## Example
