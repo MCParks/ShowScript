@@ -121,7 +121,8 @@ All of these commands require the `castmember` permission:
   - `--async`: Runs the show asynchronously. Individual Show Actions will still run synchronously.
   - `--startAt <timecode>`: Specifies the timecode (in ticks) at which to start the show.
   - `--args`: Specifies additional arguments for the show, if the show requires them
-  Usage: `show start <showName> [--log] [--async] [--startAt <timecode>] [--args <arguments>]`.
+  
+  Usage: `show start <showName> [--log] [--async] [--startAt <timecode>] [--args <arguments>]`
 
 - `/show stop <showName>`: Stops all instances of a specific show. Replace `<showName>` with the name of the show you want to stop. 
 
