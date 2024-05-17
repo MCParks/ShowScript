@@ -279,6 +279,35 @@ for (int i=1; i<=42; i++) { // there are 42 frames in this video, named `001.png
 
 
 
+### Global Variables
+
+ShowScript 3 has the ability to get and set variables that can be accessed across shows. Currently, these values will not persist across server restarts.
+
+`setGlobalVariable(String name, Object value)`: 
+`getGlobalVariable(String name)`:
+`getGlobalVariable(String name, Object defaultValue)`:
+
+```groovy
+// testShow.groovy
+
+ticks(0) {
+  setGlobalVariable("x", 5)
+}
+```
+
+```groovy
+// test2.groovy
+ticks(0) {
+  def x = getGlobalVariable("x") // this will be 5
+  def y = getGlobalVariable("y") // this will be `null`
+  def yWithDefaultValue = getGlobalVariable("y", 10) // this will default to 10
+}
+```
+
+### Sharing data between shows: `export` and `load`
+
+// TODO: add
+
 ### Accessing server info
 
 ShowScript 3 has some convenience methods for accessing information from the Minecraft server that you can use in programming to make certain decisions. 
