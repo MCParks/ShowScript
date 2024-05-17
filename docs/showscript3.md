@@ -306,7 +306,120 @@ ticks(0) {
 
 ### Sharing data between shows: `export` and `load`
 
-// TODO: add
+ShowScript 3 provides a powerful mechanism to share data and functions between shows using `export` and `load`. This allows you to define reusable components in one show and use them in another, promoting code reuse and modularity. Let's go through both concepts with examples.
+
+#### Exporting and Loading Data
+
+Imagine you have a scenario where multiple shows need to use the same piece of data, such as the coordinates of a specific location. Instead of defining the coordinates in each show, you can define them once and export them.
+
+```groovy
+// locationData.groovy
+def mainLocation = [world: "world", x: 100, y: 64, z: 100]
+
+export("mainLocation", mainLocation)
+
+ticks(0) {
+  cmd {
+    ...
+  }
+}
+```
+
+In this example, `mainLocation` is exported with the name "mainLocation". 
+
+You can then load this data in another show:
+
+```groovy
+// useLocationData.groovy
+def importedData = load("locationData")
+
+ticks(0) {
+  cmd {
+    def loc = importedData.mainLocation
+    "teleport @a ${loc.x} ${loc.y} ${loc.z}"
+  }
+}
+```
+
+Running `/show start useLocationData` will teleport all players to the coordinates defined in `mainLocation`.
+
+#### Exporting and Loading Functions
+
+Similarly, you can export functions from one show and use them in another, allowing you to create reusable components.
+
+```groovy
+// greetingFunctions.groovy
+def sayHello = { name ->
+  return "hello ${name}"
+}
+
+export("sayHello", sayHello)
+
+ticks(0) {
+  cmd {
+    sayHello("world")
+  }
+}
+```
+
+In this example, the function `sayHello` is exported with the name "sayHello". When this show is run, it will broadcast "hello world".
+
+You can then load and use this function in another show:
+
+```groovy
+// useGreetingFunction.groovy
+def importedFunctions = load("greetingFunctions")
+
+ticks(0) {
+  cmd {
+    importedFunctions.sayHello("tyler")
+  }
+}
+```
+
+Running `/show start useGreetingFunction` will broadcast "hello tyler".
+
+#### Combining Data and Functions
+
+You can combine both concepts to create even more powerful and reusable components. For example, you can have a show that exports both data and functions:
+
+```groovy
+// dataAndFunctions.groovy
+def mainLocation = [world: "world", x: 100, y: 64, z: 100]
+def sayHello = { name ->
+  return "hello ${name}"
+}
+
+export("mainLocation", mainLocation)
+export("sayHello", sayHello)
+
+ticks(0) {
+  cmd {
+    sayHello("world")
+  }
+}
+```
+
+In this example, both `mainLocation` and `sayHello` are exported. You can then load and use both in another show:
+
+```groovy
+// useDataAndFunctions.groovy
+def imported = load("dataAndFunctions")
+
+ticks(0) {
+  def loc = imported.mainLocation
+  cmd {
+    "teleport @a ${loc.x} ${loc.y} ${loc.z}"
+  }
+  cmd {
+    imported.sayHello("everyone")
+  }
+}
+```
+
+Running `/show start useDataAndFunctions` will teleport all players to the coordinates defined in `mainLocation` and broadcast "hello everyone".
+
+By using `export` and `load`, you can create modular and reusable code components in ShowScript, making it easier to maintain and extend your shows.
 
 ### Accessing server info
 
@@ -385,3 +498,39 @@ Get the mathematical cosine of an angle
 
 #### `tan(double angle)` (returns double)
 Get the mathematical tangent of an angle
+
+
+### Accessing information from ANY plugin
+
+The Groovy interpreter that runs ShowScript shows has access to the entire Java classpath. You can `import` any Java class you want for use in your shows, even classes from plugins you have installed.
+
+Here’s an example of how to use TrainCarts to get information about a specific train:
+
+```groovy
+// Import the necessary TrainCarts classes
+import com.bergerkiller.bukkit.tc.controller.MinecartGroup
+import com.bergerkiller.bukkit.tc.controller.MinecartMember
+import com.bergerkiller.bukkit.tc.properties.TrainPropertiesStore
+
+ticks(0) {
+  // Get the train by its name
+  def trainName = "MyTrain"
+  def train = TrainPropertiesStore.get(trainName).getHolder()
+  
+  if (train != null) {
+    // Get the first member of the train and its location
+    def firstMember = train.get(0)
+    def location = firstMember.getEntity().getLocation()
+    
+    cmd {
+      "broadcast The first member of train ${trainName} is at ${location.getX()}, ${location.getY()}, ${location.getZ()}"
+    }
+  } else {
+    cmd {
+      "broadcast Train ${trainName} not found!"
+    }
+  }
+}
+```
+
+This allows you to use ShowScript to take practically any action on your server
