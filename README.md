@@ -114,6 +114,8 @@ time1163:
 
 ## Command Usage
 
+**NOTE: Any commands run in show files run as CONSOLE with full permissions. Shows can include ARBITRARY CODE, so be careful who you let write to files in your `Shows` directory.**
+
 All of these commands require the `castmember` permission:
 
 - `/show start <showName>`: Starts a specific show. Replace `<showName>` with the name of the show you want to start (without the file extension). This command also accepts optional flags:
