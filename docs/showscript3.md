@@ -533,4 +533,4 @@ ticks(0) {
 }
 ```
 
-This allows you to use ShowScript to take practically any action on your server
+This allows you to use ShowScript to take practically any action on your server. **Note: This means that anybody with access to your `Shows` directory and the `castmember` command on your server essentially has the ability to run arbitrary code on your computer!**
