@@ -134,6 +134,9 @@ All of these commands require the `castmember` permission:
 
 - `/show list`: Lists all currently running shows. 
 
+## Build
+
+To build the plugin, run `./gradlew shadowJar`
 
 ## Licensing
 
