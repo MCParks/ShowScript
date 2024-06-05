@@ -183,6 +183,18 @@ public abstract class TimecodeDsl extends Script {
         return Math.tan(Math.toRadians(angle));
     }
 
+    public Collection<Player> playersInRegion(String regionName) {
+        return Main.getPlugin(Main.class).getRegionListener().getPlayersInRegion(regionName);
+    }
+
+    public Collection<String> playerRegions(Player player) {
+        return Main.getPlugin(Main.class).getRegionListener().getRegionsForPlayer(player);
+    }
+
+    public Collection<String> playerRegions(String playerName) {
+        return Main.getPlugin(Main.class).getRegionListener().getRegionsForPlayer(player(playerName));
+    }
+
     public Collection<ShowScheduler> runningShows() {
         return Main.getPlugin(Main.class).getActiveShows();
     }

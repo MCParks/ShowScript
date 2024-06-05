@@ -13,10 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RegionListener implements Listener {
     public static Map<Player, Set<ProtectedRegion>> regionMap;
@@ -30,6 +29,17 @@ public class RegionListener implements Listener {
         disabledPassengers = new HashSet<>();
         worldGuard = wgp;
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin(Main.class));
+    }
+
+    public Collection<Player> getPlayersInRegion(String regionId) {
+        return regionMap.entrySet().stream()
+                .filter(entry -> entry.getValue().stream().anyMatch(region -> region.getId().equals(regionId)))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<String> getRegionsForPlayer(Player player) {
+        return regionMap.get(player).stream().map(ProtectedRegion::getId).collect(Collectors.toList());
     }
 
     @EventHandler

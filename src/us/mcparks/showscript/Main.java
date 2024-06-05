@@ -143,7 +143,9 @@ public class Main extends JavaPlugin implements Listener {
 
   }
 
-
+  public RegionListener getRegionListener() {
+    return regionListener;
+  }
 
 
   public void addActiveShow(ShowScheduler show) {

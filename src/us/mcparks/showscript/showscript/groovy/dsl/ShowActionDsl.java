@@ -40,7 +40,6 @@ public class ShowActionDsl {
         closure.setResolveStrategy(Closure.DELEGATE_FIRST);
         closure.setDelegate(map);
         closure.call();
-        System.out.println(map);
         ensureMapHasKeys(map, Lists.newArrayList("name"));
         actions.add(new GroovyShowAction(ShowActionType.SHOW, map));
     }
