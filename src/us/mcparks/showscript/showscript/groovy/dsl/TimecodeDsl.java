@@ -6,6 +6,7 @@ import groovy.lang.Closure;
 import groovy.lang.Script;
 import groovy.transform.BaseScript;
 import us.mcparks.showscript.Main;
+import us.mcparks.showscript.event.show.SetShowScriptVariableEvent;
 import us.mcparks.showscript.showscript.framework.ShowArgs;
 import us.mcparks.showscript.showscript.framework.schedulers.ShowScheduler;
 import us.mcparks.showscript.showscript.framework.actions.ShowAction;
@@ -123,6 +124,7 @@ public abstract class TimecodeDsl extends Script {
 
     public void setGlobalVariable(String name, Object value) {
         globalVariables.put(name, value);
+        Bukkit.getServer().getPluginManager().callEvent(new SetShowScriptVariableEvent(name, value));
     }
 
     /*
