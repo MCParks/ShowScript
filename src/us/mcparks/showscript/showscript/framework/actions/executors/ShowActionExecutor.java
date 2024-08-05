@@ -111,10 +111,11 @@ public abstract class ShowActionExecutor {
     }
 
     protected void startSelf() throws Exception {
-        if (scheduler.getCurrentRecursionDepth() < scheduler.getShow().getMaxRecursionDepth()) {
-            DebugLogger.log(scheduler.getName(), "starting itself -- recursion depth is " + scheduler.getCurrentRecursionDepth() + " (max " + scheduler.getShow().getMaxRecursionDepth() + ")");
-            scheduler.getPlugin().timecodeExecutor.startShow(scheduler.getShow().clone(), scheduler.getSender(), scheduler.shouldDisplay(), scheduler.getCurrentRecursionDepth() + 1, true);
-        }
+        scheduler.restart();
+//        if (scheduler.getCurrentRecursionDepth() < scheduler.getShow().getMaxRecursionDepth()) {
+//            DebugLogger.log(scheduler.getName(), "starting itself -- recursion depth is " + scheduler.getCurrentRecursionDepth() + " (max " + scheduler.getShow().getMaxRecursionDepth() + ")");
+//            scheduler.getPlugin().timecodeExecutor.startShow(scheduler.getShow().clone(), scheduler.getSender(), scheduler.shouldDisplay(), scheduler.getCurrentRecursionDepth() + 1, scheduler.isAsync());
+//        }
     }
 
     protected void random(List<String> commands) throws Exception {

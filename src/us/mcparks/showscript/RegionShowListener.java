@@ -432,6 +432,9 @@ public class RegionShowListener implements Listener {
         }
 
         private void addSetupDelay(TimecodeShowConfig setupShow, long delay) {
+            if (delay < 0) {
+                throw new IllegalArgumentException("Delay must be greater than or equal to 0");
+            }
             Map<String, String> showActionMap = new HashMap<>();
             showActionMap.put("item", "cmd");
             showActionMap.put("cmd", "");
@@ -439,14 +442,18 @@ public class RegionShowListener implements Listener {
         }
 
         private void addLoopAction(TimecodeShowConfig loopShow, long delay) {
+            if (delay < 0) {
+                throw new IllegalArgumentException("Delay must be greater than or equal to 0");
+            }
+
             if (loopShow instanceof GroovyShowConfig) {
-                loopShow.addShowAction((int)(loopShow.getDuration() + delay + 1), new GroovyShowAction(ShowActionType.SELF, new HashMap<>()));
+                loopShow.addShowAction((int)(loopShow.getDuration()-1 + delay), new GroovyShowAction(ShowActionType.SELF, new HashMap<>()));
             } else {
                 Map<String, String> showActionMap = new HashMap<>();
                 showActionMap.put("item", "cmd");
                 showActionMap.put("cmd", "show start " + loopShow.getShowName());
                 int loopDuration = loopShow.getDuration();
-                loopShow.addShowAction((int)(loopDuration + delay + 1), new BasicShowAction(ShowActionType.CMD, showActionMap));
+                loopShow.addShowAction((int)(loopDuration + delay), new BasicShowAction(ShowActionType.CMD, showActionMap));
             }
         }
 

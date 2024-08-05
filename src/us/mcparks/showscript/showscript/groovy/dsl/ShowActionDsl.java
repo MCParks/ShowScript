@@ -44,6 +44,10 @@ public class ShowActionDsl {
         actions.add(new GroovyShowAction(ShowActionType.SHOW, map));
     }
 
+    public void startSelf(Closure<?> closure) {
+        actions.add(new GroovyShowAction(ShowActionType.SELF, Collections.emptyMap()));
+    }
+
     // Used by the delegating TimecodeDsl to suck up the actions defined in this show action closure
     public List<ShowAction> getActions() {
         return actions;

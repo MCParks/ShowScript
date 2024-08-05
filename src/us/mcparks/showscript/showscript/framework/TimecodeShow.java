@@ -62,6 +62,10 @@ public abstract class TimecodeShow<T extends TimecodeShowConfig> implements Clon
 
   public abstract TimecodeShow clone();
 
+  public void reset() {
+    actionTicks = new PriorityQueue<>(map.keySet());
+  }
+
   @Override
   public String toString() {
     String res = "";

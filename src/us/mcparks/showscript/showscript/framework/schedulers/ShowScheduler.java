@@ -11,5 +11,7 @@ public interface ShowScheduler extends Runnable {
 
   public int getTimecode();
 
+  public void restart();
+
 
 }

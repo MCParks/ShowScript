@@ -71,7 +71,7 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
     // this.showTaskId = this.getTaskId();
     // Increment the timecode
     timecode++;
-
+    //System.out.println("It's timecode " + timecode + " for show " + name + " at time " + System.currentTimeMillis() + " with recursion depth " + recursionDepth);
     if (!initialized) {
       DebugLogger.log(getName(), "starting");
       init();
@@ -89,13 +89,21 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
       // Get actions for this tick, execute each
       List<ShowAction> actions = show.getNextActions();
       for (ShowAction action : actions) {
-        //System.out.println("executing " + actions.size() + " actions for timecode " + next + " at time " + timecode);
+        //System.out.println("executing " + actions.size() + " actions for timecode " + next + " at time " + timecode + " for show " + name + " with recursion depth " + recursionDepth);
         executeShowAction(action);
       }
     } else {
       setTimeToWait();
     }
 
+  }
+
+  @Override
+  public void restart() {
+    timecode = -1;
+    waitCounter = 0;
+    actionCounter = 0;
+    show.reset();
   }
 
 
