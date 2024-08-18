@@ -130,7 +130,7 @@ publishing {
         }
 
         maven {
-            url = uri('http://repo.aikar.co/nexus/content/groups/aikar/')
+            url = uri('https://repo.aikar.co/nexus/content/groups/aikar/')
         }
     }
 }
