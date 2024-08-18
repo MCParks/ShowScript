@@ -58,6 +58,11 @@ repositories {
         url = uri('https://oss.sonatype.org/content/repositories/snapshots/')
     }
 
+    // aikar
+    maven {
+        url = uri('https://repo.aikar.co/nexus/content/groups/aikar/')
+    }
+
 }
 
 dependencies {
@@ -127,10 +132,6 @@ publishing {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
             }
-        }
-
-        maven {
-            url = uri('https://repo.aikar.co/nexus/content/groups/aikar/')
         }
     }
 }
