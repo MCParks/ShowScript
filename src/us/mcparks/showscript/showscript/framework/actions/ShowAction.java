@@ -31,12 +31,9 @@ public abstract class ShowAction {
 
     @Override
     public String toString() {
-        String res = "";
-        res += action.toString() + ":";
-        for (Object prop : propMap.keySet()) {
-            res += "\n " + prop + ": " + propMap.get(prop);
-        }
-        return res;
+        return action.toString() + ": " + propMap.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining(", "));
     }
 
 }

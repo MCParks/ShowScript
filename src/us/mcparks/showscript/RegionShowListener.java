@@ -8,6 +8,8 @@ import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import us.mcparks.showscript.event.region.PlayerEnterRegionEvent;
 import us.mcparks.showscript.event.region.PlayerLeaveRegionEvent;
 import us.mcparks.showscript.showscript.framework.TimecodeShow;
@@ -49,6 +51,9 @@ public class RegionShowListener implements Listener {
 
     // regions -> ignored schemas, for messaging to users when `/regionshows --ignored` is run
     Multimap<String, RegionShowInstance> ignoredSchemas;
+
+    // Store a map of schema filepaths to their hash, so we can detect if a duplicate schema has been loaded
+    Map<HashCode, String> schemaHashes = new HashMap<>();
 
     public RegionShowListener(Main main) {
         this.main = main;
@@ -99,6 +104,17 @@ public class RegionShowListener implements Listener {
         try {
             List<String> regions = new ArrayList<>();
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+
+            String configAsString = yaml.saveToString();
+            HashCode hash = Hashing.sha256().hashBytes(configAsString.getBytes());
+            if (schemaHashes.containsKey(hash)) {
+                if (sender != null) {
+                    sender.sendMessage("Error loading region show " + f.getName() + ": A schema with identical " +
+                            "contents has already been loaded: " + schemaHashes.get(hash));
+                }
+                return false;
+            }
+
             if (yaml.isList("region")) {
                 regions.addAll(yaml.getStringList("region"));
             } else if (yaml.isString("region")) {

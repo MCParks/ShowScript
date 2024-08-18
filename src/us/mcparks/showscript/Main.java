@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import co.aikar.timings.lib.MCTiming;
+import co.aikar.timings.lib.TimingManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import us.mcparks.showscript.event.region.RegionListener;
@@ -37,6 +39,8 @@ public class Main extends JavaPlugin implements Listener {
   public static AnnotationParser<CommandSender> cloudAnnotationParser;
   public static BukkitAudiences audiences;
   public static AudienceProvider<CommandSender> commandSenderAudienceProvider;
+  public static MCTiming baseTiming;
+  public static TimingManager timingManager;
   public File rbFolder = new File(getRealDataFolder(), "Rebuilds");
   public File fs = new File(getRealDataFolder(), "Shows");
   public TimecodeShowExecutor timecodeExecutor;
@@ -100,6 +104,8 @@ public class Main extends JavaPlugin implements Listener {
     Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(),
         100L, 1L);
 
+    timingManager = TimingManager.of(this);
+    baseTiming = timingManager.of("Shows");
 
     // We evaluate _something_ to instantiate a GroovyShell now so it's cached before shows start running
     GroovyShowConfig.evaluator.evaluateExpression("println 'Hello, World! Warming up the Groovy engine.'");

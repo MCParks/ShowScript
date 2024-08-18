@@ -3,6 +3,7 @@ package us.mcparks.showscript.showscript.framework.schedulers;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import co.aikar.timings.lib.MCTiming;
 import us.mcparks.showscript.util.DebugLogger;
 import us.mcparks.showscript.util.Lag;
 import us.mcparks.showscript.Main;
@@ -34,7 +35,6 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
   // Counters used for tasks that execute over time
   int waitCounter;
   int actionCounter;
-
 
   public TimecodeShowScheduler(Main main, TimecodeShow show, String name, boolean display,
                                CommandSender sender, long recursionDepth, int startAt) {
@@ -68,33 +68,40 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
 
   @Override
   public void run() {
-    // this.showTaskId = this.getTaskId();
-    // Increment the timecode
-    timecode++;
-    //System.out.println("It's timecode " + timecode + " for show " + name + " at time " + System.currentTimeMillis() + " with recursion depth " + recursionDepth);
-    if (!initialized) {
-      DebugLogger.log(getName(), "starting");
-      init();
-      initialized = true;
+    try (MCTiming timing = getTiming().startTiming()) {
+
+        // this.showTaskId = this.getTaskId();
+        // Increment the timecode
+        timecode++;
+        //System.out.println("It's timecode " + timecode + " for show " + name + " at time " + System.currentTimeMillis() + " with recursion depth " + recursionDepth);
+        if (!initialized) {
+          DebugLogger.log(getName(), "starting");
+          init();
+          initialized = true;
+        }
+
+        Integer next = show.getNextActionTick();
+
+        if (next == null) {
+          main.cancelShowById(getShowTaskId());
+        } else if (next <= timecode && waitCounter == 0) {
+          // Reset wait counter
+          waitCounter = 0;
+
+          // Get actions for this tick, execute each
+          List<ShowAction> actions = show.getNextActions();
+          for (ShowAction action : actions) {
+            try (MCTiming actionTiming = Main.timingManager.of(action.toString(), timing)) {
+              //System.out.println("executing " + actions.size() + " actions for timecode " + next + " at time " + timecode + " for show " + name + " with recursion depth " + recursionDepth);
+              executeShowAction(action);
+            }
+          }
+        } else {
+          setTimeToWait();
+        }
+
     }
 
-    Integer next = show.getNextActionTick();
-
-    if (next == null) {
-      main.cancelShowById(getShowTaskId());
-    } else if (next <= timecode && waitCounter == 0) {
-      // Reset wait counter
-      waitCounter = 0;
-
-      // Get actions for this tick, execute each
-      List<ShowAction> actions = show.getNextActions();
-      for (ShowAction action : actions) {
-        //System.out.println("executing " + actions.size() + " actions for timecode " + next + " at time " + timecode + " for show " + name + " with recursion depth " + recursionDepth);
-        executeShowAction(action);
-      }
-    } else {
-      setTimeToWait();
-    }
 
   }
 
@@ -109,23 +116,24 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
 
 
   protected void executeShowAction(ShowAction action) {
-    // System.out.println("EXEC: " + action.toString());
-    // display if the flag is set
-    if (display && sender != null) {
-      sender.sendMessage(action.toString());
+    try (MCTiming timing = Main.timingManager.ofStart("ticks: " + timecode + " " + action.toString(), getTiming())) {
+      // System.out.println("EXEC: " + action.toString());
+      // display if the flag is set
+      if (display && sender != null) {
+        sender.sendMessage(action.toString());
+      }
+      try {
+        executor.execute(action);
+      } catch (Exception e) {
+        e.printStackTrace();
+        sender.sendMessage(ChatColor.RED + "ERROR IN SHOW " + name + " at timecode " + timecode
+                + "\n" +
+                "Could not parse Show Action: " + action.toString());
+        sender.sendMessage(e.getMessage());
+        //sender.sendMessage();
+        stopShow();
+      }
     }
-    try {
-      executor.execute(action);
-    } catch (Exception e) {
-      e.printStackTrace();
-      sender.sendMessage(ChatColor.RED + "ERROR IN SHOW " + name + " at timecode " + timecode
-          + "\n" +
-              "Could not parse Show Action: " + action.toString());
-      sender.sendMessage(e.getMessage());
-      //sender.sendMessage();
-      stopShow();
-    }
-
   }
 
   private void init() {
