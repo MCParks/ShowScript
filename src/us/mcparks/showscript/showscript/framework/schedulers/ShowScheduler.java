@@ -19,7 +19,7 @@ public interface ShowScheduler extends Runnable {
 
 
   default MCTiming getTiming() {
-    return TimingManager.of(Main.getPlugin(Main.class)).of(getClass().getSimpleName() + " - " + getName(), Main.baseTiming);
+    return TimingManager.of(Main.getPlugin(Main.class)).of(getName());
   }
 
 

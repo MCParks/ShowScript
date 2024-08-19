@@ -91,10 +91,8 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
           // Get actions for this tick, execute each
           List<ShowAction> actions = show.getNextActions();
           for (ShowAction action : actions) {
-            try (MCTiming actionTiming = Main.timingManager.of(action.toString(), timing)) {
               //System.out.println("executing " + actions.size() + " actions for timecode " + next + " at time " + timecode + " for show " + name + " with recursion depth " + recursionDepth);
               executeShowAction(action);
-            }
           }
         } else {
           setTimeToWait();
