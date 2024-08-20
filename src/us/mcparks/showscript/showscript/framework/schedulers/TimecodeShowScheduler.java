@@ -114,7 +114,7 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
 
 
   protected void executeShowAction(ShowAction action) {
-    try (MCTiming timing = Main.timingManager.ofStart("ticks: " + timecode + " " + action.toString(), getTiming())) {
+    //try (MCTiming timing = Main.timingManager.ofStart("ticks: " + timecode + " " + action.toString(), getTiming())) {
       // System.out.println("EXEC: " + action.toString());
       // display if the flag is set
       if (display && sender != null) {
@@ -131,7 +131,7 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
         //sender.sendMessage();
         stopShow();
       }
-    }
+    //}
   }
 
   private void init() {
