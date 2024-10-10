@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 import co.aikar.timings.lib.MCTiming;
 import co.aikar.timings.lib.TimingManager;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import us.mcparks.showscript.event.region.RegionListener;
 import us.mcparks.showscript.event.show.ShowStartEvent;
@@ -94,7 +94,7 @@ public class Main extends JavaPlugin implements Listener {
     // start RegionListener if WorldGuard is present
     Plugin worldGuard = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
     if (worldGuard != null) {
-        regionListener = new RegionListener((WorldGuardPlugin) worldGuard);
+        regionListener = new RegionListener(WorldGuardWrapper.getInstance());
     } else {
         getLogger().warning("WorldGuard not found. Region Shows will not function.");
     }
