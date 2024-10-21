@@ -70,17 +70,17 @@ public class RegionShowListener implements Listener {
     }
     
     private void loadRegionShows(Path path) {
-        loadRegionShows(path, null);
+        loadRegionShows(path, null, true);
     }
 
-    private void loadRegionShows(Path path, CommandSender sender) {
+    private void loadRegionShows(Path path, CommandSender sender, boolean showIgnored) {
         if (sender != null) sender.sendMessage("Loading region shows in " + path.toString().substring(Main.getPlugin(Main.class).fs.toPath().toString().length()));
         try {
             Files.walk(path)
             .filter(Files::isRegularFile)
             .filter(file -> file.toString().endsWith("_regionshowschema.yml"))
             .forEach(file -> {
-                loadRegionShow(file.toFile(), sender);
+                loadRegionShow(file.toFile(), sender, showIgnored);
             });
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -88,15 +88,7 @@ public class RegionShowListener implements Listener {
         }
     }
 
-    private boolean loadRegionShow(String regionShowName) {
-        return loadRegionShow(regionShowName, null);
-    }
-
-    private boolean loadRegionShow(String regionShowName, CommandSender sender) {
-        return loadRegionShow(new File(Main.getPlugin(Main.class).fs, regionShowName + ".yml"), null);
-    }
-
-    private boolean loadRegionShow(File f, CommandSender sender) {
+    private boolean loadRegionShow(File f, CommandSender sender, boolean alertIfIgnored) {
         if (!f.exists()) {
             return false;
         }
@@ -210,7 +202,7 @@ public class RegionShowListener implements Listener {
 
 
 
-            if (isIgnored) {
+            if (isIgnored && alertIfIgnored) {
                 if (sender != null) sender.sendMessage("Ignoring region show schema " + f.getName() + "(if it was previously running, it has been unloaded)");
                 return true;
             }
@@ -275,8 +267,8 @@ public class RegionShowListener implements Listener {
 
     @CommandMethod("loadregionshows <path>")
     @CommandPermission("castmember")
-    public void loadRegionShowsCommand(CommandSender sender, @Argument(value="path", suggestions = "showDirectoryNames") String path) {
-        loadRegionShows(new File(Main.getPlugin(Main.class).fs, path).toPath(), sender);
+    public void loadRegionShowsCommand(CommandSender sender, @Argument(value="path", suggestions = "showDirectoryNames") String path, @Flag(value="show-ignored") boolean showIgnored) {
+        loadRegionShows(new File(Main.getPlugin(Main.class).fs, path).toPath(), sender, showIgnored);
     }
 
     @CommandMethod("reloadregionshows")
