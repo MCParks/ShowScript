@@ -15,6 +15,7 @@ plugins {
 shadowJar {
     relocate 'cloud.commandframework', 'us.mcparks.showscript.cloud.commandframework'
     relocate 'co.aikar.timings.lib', 'us.mcparks.showscript.aikar.timings.lib'
+    relocate 'org.codemc.worldguardwrapper', 'us.mcparks.showscript.codemc.worldguardwrapper'
 }
 
 sourceSets {
@@ -63,6 +64,11 @@ repositories {
         url = uri('https://repo.aikar.co/nexus/content/groups/aikar/')
     }
 
+    // codemc - worldguardwrapper
+    maven {
+        url = uri('https://repo.codemc.org/repository/maven-public/')
+    }
+
 }
 
 dependencies {
@@ -78,6 +84,7 @@ dependencies {
     implementation "net.kyori:adventure-platform-bukkit:4.3.0"
     implementation "commons-io:commons-io:2.16.1"
     implementation "co.aikar:minecraft-timings:1.0.4"
+    implementation "org.codemc.worldguardwrapper:worldguardwrapper:1.2.1-SNAPSHOT"
 
 }
 

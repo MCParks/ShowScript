@@ -1,9 +1,8 @@
 package us.mcparks.showscript.event.region;
 
 import com.google.common.collect.Sets;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import us.mcparks.showscript.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,16 +17,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RegionListener implements Listener {
-    public static Map<Player, Set<ProtectedRegion>> regionMap;
-    private WorldGuardPlugin worldGuard;
+    public static Map<Player, Set<IWrappedRegion>> regionMap;
+    private final WorldGuardWrapper worldGuardWrapper;
 
     // Players in this set won't have their regions updated as long as they're passengers in a vehicle
     private Set<Player> disabledPassengers;
 
-    public RegionListener(WorldGuardPlugin wgp) {
+    public RegionListener(WorldGuardWrapper wgpw) {
         regionMap = new HashMap<>();
         disabledPassengers = new HashSet<>();
-        worldGuard = wgp;
+        worldGuardWrapper = wgpw;
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin(Main.class));
     }
 
@@ -39,7 +38,7 @@ public class RegionListener implements Listener {
     }
 
     public Collection<String> getRegionsForPlayer(Player player) {
-        return regionMap.get(player).stream().map(ProtectedRegion::getId).collect(Collectors.toList());
+        return regionMap.get(player).stream().map(IWrappedRegion::getId).collect(Collectors.toList());
     }
 
     @EventHandler
@@ -88,7 +87,7 @@ public class RegionListener implements Listener {
 
     private synchronized void updateRegions(final Player player, final MovementType movementType,
                                             Location to) {
-        Set<ProtectedRegion> oldRegions;
+        Set<IWrappedRegion> oldRegions;
 
         if (regionMap.get(player) == null) {
             oldRegions = new HashSet<>();
@@ -96,10 +95,9 @@ public class RegionListener implements Listener {
             oldRegions = new HashSet<>(regionMap.get(player));
         }
 
-        RegionManager rm = worldGuard.getRegionManager(to.getWorld());
+        Set<IWrappedRegion> applicableRegions = worldGuardWrapper.getRegions(to);
 
-        if (rm != null) {
-            Set<ProtectedRegion> applicableRegions = rm.getApplicableRegions(to).getRegions();
+        if (applicableRegions != null) {
             // System.out.println("------------");
             // for (ProtectedRegion region : oldRegions) {
             // System.out.println("old: " + region.getId());
@@ -107,12 +105,12 @@ public class RegionListener implements Listener {
             // for (ProtectedRegion region : applicableRegions) {
             // System.out.println("new: " + region.getId());
             // }
-            for (ProtectedRegion region : Sets.difference(applicableRegions, oldRegions)) {
+            for (IWrappedRegion region : Sets.difference(applicableRegions, oldRegions)) {
                 Bukkit.getServer().getPluginManager()
                         .callEvent(new PlayerEnterRegionEvent(player, region.getId()));
             }
 
-            for (ProtectedRegion region : Sets.difference(oldRegions, applicableRegions)) {
+            for (IWrappedRegion region : Sets.difference(oldRegions, applicableRegions)) {
                 Bukkit.getServer().getPluginManager()
                         .callEvent(new PlayerLeaveRegionEvent(player, region.getId()));
             }
