@@ -131,7 +131,7 @@ public class Shows {
       return new ArrayList<>();
     }
 
-    return Main.showFileNames.get().stream().filter(s -> s.startsWith(input)).collect(Collectors.toList());
+    return main.showFileNames.get().stream().filter(s -> s.startsWith(input)).collect(Collectors.toList());
   }
 
   @Suggestions("showDirectoryNames")
@@ -140,7 +140,7 @@ public class Shows {
       return new ArrayList<>();
     }
 
-    return Main.showFileNames.get().stream().map(path -> path.lastIndexOf("/") == -1 ? path : path.substring(0, path.lastIndexOf("/"))).distinct().filter(s -> s.startsWith(input)).collect(Collectors.toList());
+    return main.showFileNames.get().stream().map(path -> path.lastIndexOf("/") == -1 ? path : path.substring(0, path.lastIndexOf("/"))).distinct().filter(s -> s.startsWith(input)).collect(Collectors.toList());
   }
 
   public static String getShowNameFromAbsolutePath(String absolutePath) {

@@ -49,8 +49,8 @@ public class Main extends JavaPlugin implements Listener {
 
   private RegionListener regionListener;
 
-  public static Supplier<List<String>> showFileNames = new AsynchronouslyRefreshingSupplier<>(() -> {
-    File fs = new File(Main.getPlugin(Main.class).getRealDataFolder(), "Shows");
+  public Supplier<List<String>> showFileNames = new AsynchronouslyRefreshingSupplier<>(() -> {
+    File fs = new File(getRealDataFolder(), "Shows");
     if (!fs.exists()) {
       fs.mkdir();
     }
@@ -94,6 +94,7 @@ public class Main extends JavaPlugin implements Listener {
     // start RegionListener if WorldGuard is present
     Plugin worldGuard = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
     if (worldGuard != null) {
+        getLogger().info("Using WorldGuardWrapper");
         regionListener = new RegionListener(WorldGuardWrapper.getInstance());
     } else {
         getLogger().warning("WorldGuard not found. Region Shows will not function.");
