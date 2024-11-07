@@ -1,8 +1,6 @@
 package us.mcparks.showscript.showscript.framework.schedulers;
 
 import co.aikar.timings.lib.MCTiming;
-import co.aikar.timings.lib.TimingManager;
-import jdk.nashorn.internal.runtime.Timing;
 import us.mcparks.showscript.Main;
 import us.mcparks.showscript.showscript.framework.actions.ShowAction;
 import us.mcparks.showscript.showscript.framework.TimecodeShow;
