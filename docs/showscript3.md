@@ -488,6 +488,12 @@ Get a list of all running shows
 #### `isShowRunning(String showName)` returns `boolean`
 Returns `true` if a show of that name is running, otherwise `false`
 
+#### `playersInRegion(String regionName)` returns `Collection\<Player\>`
+Returns a collection of players that are in the given WorldGuard region (requires WorldGuard)
+
+### `playerRegions(Player player)` and `playerRegions(String playerName)` returns `Collection\<String\>`
+Returns a collection of regions (represented by their String names) that a player is currently in (requires WorldGuard)
+
 ### Other convenience methods
 
 #### `sin(double angle)` (returns double)
