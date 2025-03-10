@@ -65,7 +65,15 @@ public class ShowArgs {
                     return false;
                 }
                 for (int i = 0; i < args.length; i++) {
-                    if (!args[i].equals(other.args[i])) {
+                    if (args[i] == null) {
+                        if (other.args[i] != null) {
+                            return false;
+                        }
+                    } else if (other.args[i] == null) {
+                        if (args[i] != null) {
+                            return false;
+                        }
+                    } else if (!args[i].equals(other.args[i])) {
                         return false;
                     }
                 }
