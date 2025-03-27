@@ -123,25 +123,47 @@ public class RegionShowListener implements Listener {
             }
 
             TimecodeShowConfig setupShow = main.timecodeExecutor.getShowConfig(yaml.isConfigurationSection("setup") ? yaml.getString("setup.name") : yaml.getString("setup"), placeholderArgs);
+
+            if (setupShow == null) {
+                throw new IllegalArgumentException("Setup show `"  + yaml.getString("setup.name") + "` not found");
+            }
+
             Long setupDelay = yaml.isConfigurationSection("setup") ? (yaml.contains("setup.delay") ? yaml.getLong("setup.delay") : 0) : 0;
             TimecodeShowConfig cleanupShow = main.timecodeExecutor.getShowConfig(yaml.getString("cleanup"), placeholderArgs);
-            
+
+            if (cleanupShow == null) {
+                throw new IllegalArgumentException("Cleanup show `"  + yaml.getString("cleanup.name") + "` not found");
+            }
+
             List<TimecodeShowConfig> loopShows = new ArrayList<>();
             List<Long> loopShowDelays = new ArrayList<>();
             
             if (yaml.isString("loop")) {
-                loopShows.add(main.timecodeExecutor.getShowConfig(yaml.getString("loop"), placeholderArgs));
+                TimecodeShowConfig show = main.timecodeExecutor.getShowConfig(yaml.getString("loop"), placeholderArgs);
+                if (show == null) {
+                    throw new IllegalArgumentException("Loop show `"  + yaml.getString("loop.name") + "` not found");
+                }
+                loopShows.add(show);
                 loopShowDelays.add(0L);
             } else if (yaml.isConfigurationSection("loop")) {
-                loopShows.add(main.timecodeExecutor.getShowConfig(yaml.getString("loop.name"), placeholderArgs));
+                TimecodeShowConfig show = main.timecodeExecutor.getShowConfig(yaml.getString("loop.name"), placeholderArgs);
+                if (show == null) {
+                    throw new IllegalArgumentException("Loop show `"  + yaml.getString("loop.name") + "` not found");
+                }
+                loopShows.add(show);
                 loopShowDelays.add(yaml.contains("loop.delay") ? yaml.getLong("loop.delay") : 0);
             } else {
                 for (Map<?,?> loop : yaml.getMapList("loop")) {
-                    loopShows.add(
-                        main.timecodeExecutor.getShowConfig((String) loop.get("name"), placeholderArgs));
+                    TimecodeShowConfig show = main.timecodeExecutor.getShowConfig((String) loop.get("name"), placeholderArgs);
+                    if (show == null) {
+                        throw new IllegalArgumentException("Loop show `"  + loop.get("name") + "` not found");
+                    }
+                    loopShows.add(show);
                     loopShowDelays.add(loop.containsKey("delay") ? ((Number) loop.get("delay")).longValue() : 0);   
                 }
             }
+
+
 
             String filepath = f.getAbsolutePath();
             boolean isIgnored = yaml.contains("ignore") && yaml.getBoolean("ignore") == true;
@@ -190,12 +212,18 @@ public class RegionShowListener implements Listener {
                     }
                 }
 
+                Set<String> loadedRegions = new HashSet<>();
+
                 for (String region : regions) {
                     if (!region.toLowerCase().equals(region)) {
                         throw new IllegalArgumentException("Region names are always lowercase, but you entered " + region);
                     }
-                    loadRegionShow(filepath, region, setupShow, loopShows, cleanupShow, setupDelay, loopShowDelays, isIgnored, true);
+                    if (loadedRegions.contains(region)) {
+                        throw new IllegalArgumentException("Duplicate region in schema: " + region);
+                    }
 
+                    loadRegionShow(filepath, region, setupShow, loopShows, cleanupShow, setupDelay, loopShowDelays, isIgnored, true);
+                    loadedRegions.add(region);
                     if (!isIgnored && sender != null) sender.sendMessage("Loaded " + f.getName() + " in region " + region);
                 }
             }
