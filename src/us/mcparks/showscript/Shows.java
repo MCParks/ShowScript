@@ -76,10 +76,30 @@ public class Shows {
 
     @CommandMethod("show list")
     @CommandPermission("castmember")
-    public void listShows(CommandSender sender) {
+    public void listShows(CommandSender sender,
+                         @Flag(value="path", suggestions = "showDirectoryNames") String path) {
       List<ShowScheduler> shows = main.getActiveShows();
-      sender.sendMessage(ChatColor.AQUA + "" + shows.size() + ChatColor.GREEN + " shows: ");
-      for (ShowScheduler show : shows) {
+      List<ShowScheduler> filteredShows = shows;
+      
+      // Filter by path if provided
+      if (path != null) {
+        filteredShows = shows.stream()
+          .filter(show -> show.getName().startsWith(path))
+          .collect(Collectors.toList());
+      }
+      
+      // Build message with filter info if applicable
+      StringBuilder message = new StringBuilder(ChatColor.AQUA)
+        .append(filteredShows.size())
+        .append(ChatColor.GREEN)
+        .append(" shows")
+        .append(path != null ? " (filtered by path: " + path + ")" : "")
+        .append(": ");
+      
+      sender.sendMessage(message.toString());
+      
+      // Display shows
+      for (ShowScheduler show : filteredShows) {
         sender.sendMessage(ChatColor.AQUA + show.getName() + ChatColor.GRAY + " - " + ChatColor.GREEN + "Syntax Version: " + show.getSyntaxVersion());
       }
     }
