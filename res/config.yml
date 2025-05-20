@@ -1,0 +1,9 @@
+# ShowScript Configuration File
+
+# Debug logging - Set to true to enable debug messages in console
+# Default: true
+debug-logging: true
+
+# Enable timings - Set to false to disable Aikar's timings
+# Default: true (set to false on 1.20+ to avoid console spam)
+enable-timings: true

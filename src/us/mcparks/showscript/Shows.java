@@ -54,6 +54,64 @@ public class Shows {
     sender.sendMessage("Console debug has been set to: " + DebugLogger.isEnabled());
   }
 
+  @CommandMethod("show config reload")
+  @CommandPermission("castmember")
+  public void reloadConfig(CommandSender sender) {
+    main.getConfiguration().loadConfig();
+    
+    // Update settings from newly loaded config
+    DebugLogger.setLogging(main.getConfiguration().isDebugLoggingEnabled());
+    
+    sender.sendMessage(ChatColor.GREEN + "Configuration reloaded successfully!");
+  }
+  
+  @CommandMethod("show config get <key>")
+  @CommandPermission("castmember") 
+  public void getConfigValue(CommandSender sender, @Argument(value="key", suggestions="configKeys") String key) {
+    if (key.equalsIgnoreCase("debug-logging")) {
+      sender.sendMessage(ChatColor.GREEN + "debug-logging: " + 
+          ChatColor.AQUA + main.getConfiguration().isDebugLoggingEnabled());
+    } else if (key.equalsIgnoreCase("enable-timings")) {
+      sender.sendMessage(ChatColor.GREEN + "enable-timings: " + 
+          ChatColor.AQUA + main.getConfiguration().areTimingsEnabled());
+    } else {
+      sender.sendMessage(ChatColor.RED + "Unknown configuration key: " + key);
+    }
+  }
+  
+  @CommandMethod("show config set <key> <value>")
+  @CommandPermission("castmember")
+  public void setConfigValue(CommandSender sender, @Argument(value="key", suggestions="configKeys") String key, @Argument("value") String value) {
+    boolean boolValue;
+    
+    if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+      sender.sendMessage(ChatColor.RED + "Value must be 'true' or 'false'");
+      return;
+    }
+    
+    boolValue = Boolean.parseBoolean(value);
+    
+    if (key.equalsIgnoreCase("debug-logging")) {
+      main.getConfiguration().setDebugLoggingEnabled(boolValue);
+      DebugLogger.setLogging(boolValue);
+      sender.sendMessage(ChatColor.GREEN + "debug-logging set to: " + ChatColor.AQUA + boolValue);
+    } else if (key.equalsIgnoreCase("enable-timings")) {
+      main.getConfiguration().setTimingsEnabled(boolValue);
+      sender.sendMessage(ChatColor.GREEN + "enable-timings set to: " + ChatColor.AQUA + boolValue);
+      sender.sendMessage(ChatColor.YELLOW + "Note: Changes to timings will take effect after server restart");
+    } else {
+      sender.sendMessage(ChatColor.RED + "Unknown configuration key: " + key);
+    }
+  }
+  
+  @Suggestions("configKeys")
+  public List<String> configKeyNames(CommandContext<CommandSender> sender, String input) {
+    List<String> keys = new ArrayList<>();
+    keys.add("debug-logging");
+    keys.add("enable-timings");
+    return keys.stream().filter(s -> s.startsWith(input.toLowerCase())).collect(Collectors.toList());
+  }
+
   @CommandMethod("show stopall")
   @CommandPermission("castmember")
   public void stopAllShows(CommandSender sender) {
