@@ -24,6 +24,7 @@ import us.mcparks.showscript.event.show.ShowStartEvent;
 import us.mcparks.showscript.event.show.ShowStopEvent;
 import us.mcparks.showscript.showscript.framework.schedulers.ShowScheduler;
 import us.mcparks.showscript.showscript.framework.TimecodeShowExecutor;
+import us.mcparks.showscript.config.Configuration;
 import us.mcparks.showscript.showscript.groovy.GroovyShowConfig;
 import us.mcparks.showscript.util.DebugLogger;
 import us.mcparks.showscript.util.Lag;
@@ -46,8 +47,8 @@ public class Main extends JavaPlugin implements Listener {
   public TimecodeShowExecutor timecodeExecutor;
   public List<ShowScheduler> activeShows = new CopyOnWriteArrayList<>();
   private RegionShowListener regionShowListener;
-
   private RegionListener regionListener;
+  private Configuration configuration;
 
   public Supplier<List<String>> showFileNames = new AsynchronouslyRefreshingSupplier<>(() -> {
     File fs = new File(getRealDataFolder(), "Shows");
@@ -77,7 +78,12 @@ public class Main extends JavaPlugin implements Listener {
 
   @Override
   public void onEnable() {
-    DebugLogger.setLogging(true);
+    // Load configuration
+    configuration = new Configuration(this);
+    
+    // Set debug logging based on configuration
+    DebugLogger.setLogging(configuration.isDebugLoggingEnabled());
+    
     setupCloud();
 
     // Internally, this plugin also handles a legacy command. Ask Ryan for the story on why.
@@ -105,8 +111,11 @@ public class Main extends JavaPlugin implements Listener {
     Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(),
         100L, 1L);
 
-    timingManager = TimingManager.of(this);
-    baseTiming = timingManager.of("Shows");
+    // Initialize timings if enabled in configuration
+    if (configuration.areTimingsEnabled()) {
+      timingManager = TimingManager.of(this);
+      baseTiming = timingManager.of("Shows");
+    }
 
     // We evaluate _something_ to instantiate a GroovyShell now so it's cached before shows start running
     GroovyShowConfig.evaluator.evaluateExpression("println 'Hello, World! Warming up the Groovy engine.'");
@@ -152,6 +161,14 @@ public class Main extends JavaPlugin implements Listener {
 
   public RegionListener getRegionListener() {
     return regionListener;
+  }
+
+  /**
+   * Gets the plugin configuration
+   * @return the configuration
+   */
+  public Configuration getConfiguration() {
+    return configuration;
   }
 
 
