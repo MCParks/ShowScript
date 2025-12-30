@@ -9,7 +9,7 @@ plugins {
     // git commit hash in version
     id 'com.palantir.git-version' version "0.12.3"
 
-    id "com.github.johnrengelman.shadow" version "8.0.0"
+    id "com.gradleup.shadow" version "8.3.0"
 }
 
 shadowJar {
