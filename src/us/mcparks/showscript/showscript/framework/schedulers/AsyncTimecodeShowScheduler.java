@@ -36,8 +36,13 @@ public class AsyncTimecodeShowScheduler extends TimecodeShowScheduler {
     @Override
     protected void executeShowAction(ShowAction action) {
         Bukkit.getScheduler().runTask(main, () -> {
-            try (MCTiming timing = getTiming().startTiming()) {
-                super.executeShowAction(action);
+            MCTiming timing = getTiming();
+            if (timing != null) {
+                try (MCTiming t = timing.startTiming()) {
+                    super.executeActionLogic(action);
+                }
+            } else {
+                super.executeActionLogic(action);
             }
         });
     }
