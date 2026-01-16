@@ -119,14 +119,10 @@ public class TimecodeShowScheduler implements ShowScheduler, Runnable {
 
 
   protected void executeShowAction(ShowAction action) {
-    // Check if timings are enabled in the configuration
-    if (Main.timingManager != null) {
-      try (MCTiming timing = Main.timingManager.ofStart("ticks: " + timecode + " " + action.toString(), getTiming())) {
-        executeActionLogic(action);
-      }
-    } else {
-      executeActionLogic(action);
-    }
+    // Per-action timings disabled - creating unique timing names like
+    // "ticks: X action.toString()" causes Aikar's timing library to cache
+    // unlimited entries that never get GC'd, causing memory leaks.
+    executeActionLogic(action);
   }
   
   protected void executeActionLogic(ShowAction action) {
