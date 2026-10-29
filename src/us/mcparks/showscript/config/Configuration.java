@@ -55,9 +55,9 @@ public class Configuration {
             saveNeeded = true;
         }
         
-        // Enable Timings - default: true
+        // Enable Timings - default: false
         if (!config.contains(ENABLE_TIMINGS_KEY)) {
-            config.set(ENABLE_TIMINGS_KEY, true);
+            config.set(ENABLE_TIMINGS_KEY, false);
             saveNeeded = true;
         }
         
@@ -100,7 +100,7 @@ public class Configuration {
      * @return true if timings are enabled
      */
     public boolean areTimingsEnabled() {
-        return config.getBoolean(ENABLE_TIMINGS_KEY, true);
+        return config.getBoolean(ENABLE_TIMINGS_KEY, false);
     }
     
     /**

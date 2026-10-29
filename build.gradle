@@ -7,9 +7,9 @@ plugins {
     id 'maven-publish'
 
     // git commit hash in version
-    id 'com.palantir.git-version' version "0.12.3"
+    id 'com.palantir.git-version' version "5.1.0"
 
-    id "com.github.johnrengelman.shadow" version "8.0.0"
+    id "com.gradleup.shadow" version "9.6.1"
 }
 
 shadowJar {
@@ -44,6 +44,10 @@ repositories {
          url = uri('https://repo.maven.apache.org/maven2/')
      }
 
+    maven {
+        url = uri('https://repo.papermc.io/repository/maven-public/')
+    }
+
     // worldguard
     maven {
         url = uri('https://maven.enginehub.org/repo/')
@@ -64,20 +68,18 @@ repositories {
         url = uri('https://repo.aikar.co/nexus/content/groups/aikar/')
     }
 
-    // codemc - worldguardwrapper
+    // CodeMC - WorldGuardWrapper
     maven {
-        url = uri('https://repo.codemc.org/repository/maven-public/')
+        url = uri('https://repo.codemc.io/repository/maven-public/')
     }
 
 }
 
 dependencies {
-    compileOnly 'com.google.guava:guava:21.0'
-    compileOnly 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
-    compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.4-SNAPSHOT'
-    compileOnly 'com.sk89q.worldguard:worldguard-legacy:6.2'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.12'
+    compileOnly 'io.papermc.paper:paper-api:26.3.build.227-stable'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.4.6'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.20'
+    implementation 'org.apache.groovy:groovy-all:4.0.33'
     implementation 'cloud.commandframework:cloud-paper:1.8.3'
     implementation 'cloud.commandframework:cloud-annotations:1.8.3'
     implementation 'cloud.commandframework:cloud-minecraft-extras:1.8.3'
@@ -91,9 +93,11 @@ dependencies {
 group = 'us.mcparks'
 version = '1.12-1-' + gitVersion()
 description = 'ShowScript'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
-archivesBaseName = 'showscript'
+java.sourceCompatibility = JavaVersion.VERSION_25
+java.targetCompatibility = JavaVersion.VERSION_25
+base {
+    archivesName = 'showscript'
+}
 shadowJar.archiveFileName = "showscript.jar"
 build.dependsOn(shadowJar)
 jar.enabled = false

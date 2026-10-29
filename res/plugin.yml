@@ -3,5 +3,6 @@ main: us.mcparks.showscript.Main
 version: @version@
 description: A programming language developed by MCParks for scheduling commands to run at specified timecodes
 author: RyanHecht_
+api-version: '26.3'
 softdepend: [WorldGuard]
 commands:

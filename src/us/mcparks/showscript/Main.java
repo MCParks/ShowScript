@@ -78,6 +78,12 @@ public class Main extends JavaPlugin implements Listener {
 
   @Override
   public void onEnable() {
+    getRealDataFolder().mkdir();
+    fs.mkdirs();
+    if (!fs.isDirectory()) {
+      throw new IllegalStateException("Shows path is not a directory: " + fs.getAbsolutePath());
+    }
+
     // Load configuration
     configuration = new Configuration(this);
     
@@ -94,7 +100,6 @@ public class Main extends JavaPlugin implements Listener {
     Shows commandHandler = new Shows(this, this);
     cloudAnnotationParser.parse(commandHandler);
 
-    getRealDataFolder().mkdir();
     timecodeExecutor = new TimecodeShowExecutor(this);
 
     // start RegionListener if WorldGuard is present
@@ -124,7 +129,9 @@ public class Main extends JavaPlugin implements Listener {
 
   @Override
   public void onDisable() {
-    regionShowListener.unloadRegionShows();
+    if (regionShowListener != null) {
+      regionShowListener.unloadRegionShows();
+    }
   }
 
   private void setupCloud() {

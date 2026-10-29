@@ -8,6 +8,13 @@
       "INSTALL_GRADLE": "true"
     }
   },
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25",
+      "installMaven": false,
+      "installGradle": false
+    }
+  },
   "customizations": {
     "vscode": {
       "settings": {

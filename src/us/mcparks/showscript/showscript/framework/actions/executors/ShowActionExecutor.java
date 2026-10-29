@@ -12,6 +12,7 @@ import us.mcparks.showscript.showscript.framework.schedulers.TimecodeShowSchedul
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -123,11 +124,14 @@ public abstract class ShowActionExecutor {
         cmd(commands.get(random.nextInt(commands.size())));
     }
 
-    @SuppressWarnings("deprecation")
-    protected void fountain(Location loc, int id, int damage, Vector velocity, int time) {
+    protected void fountain(Location loc, String blockDataString, Vector velocity, int time) {
         int finalWait = (int) (Lag.getTPS() / 10) * (time);
+        if (blockDataString == null) {
+            throw new IllegalArgumentException("Block data cannot be null");
+        }
+        BlockData blockData = Bukkit.createBlockData(blockDataString);
         int taskId = Bukkit.getScheduler().runTaskTimer(scheduler.getPlugin(), () -> {
-            FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, id, (byte) damage);
+            FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, blockData);
             fb.setDropItem(false);
             fb.setVelocity(velocity);
         }, 1L, 1L).getTaskId();

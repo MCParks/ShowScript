@@ -36,9 +36,8 @@ public class BasicShowActionExecutor extends ShowActionExecutor {
                 double zvel = action.getDoubleProp("zvel");
                 Vector velocity = new Vector(xvel, yvel, zvel);
                 int time = action.getIntProp("time");
-                int id = action.getIntProp("id");
-                int damage = action.getIntProp("damage");
-                fountain(fountainLoc, id, damage, velocity, time);
+                String blockData = action.getStringProp("block-data");
+                fountain(fountainLoc, blockData, velocity, time);
                 break;
             case TEXT:
                 Location loc = new Location(
