@@ -13,9 +13,19 @@ import us.mcparks.showscript.showscript.framework.actions.ShowAction;
 import us.mcparks.showscript.showscript.groovy.GroovyShowAction;
 import us.mcparks.showscript.showscript.groovy.GroovyShowConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import us.mcparks.showscript.compat.BlockSpec;
+import us.mcparks.showscript.compat.ItemCompat;
+import us.mcparks.showscript.compat.MaterialSpec;
+import us.mcparks.showscript.compat.ParticleCompat;
+import us.mcparks.showscript.compat.ServerVersion;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -93,14 +103,12 @@ public abstract class TimecodeDsl extends Script {
         run();
 
         if (showClosure != null) {
-            if (args == null && showClosure.getMaximumNumberOfParameters() > 0) {
-                throw new IllegalArgumentException("Expected " + showClosure.getMaximumNumberOfParameters() + " arguments, but got 0");
+            // no arguments given (show start without --args, show startasync) = zero arguments
+            Object[] showArgs = args == null ? new Object[0] : args;
+            if (showArgs.length != showClosure.getMaximumNumberOfParameters()) {
+                throw new IllegalArgumentException("Expected " + showClosure.getMaximumNumberOfParameters() + " arguments, but got " + showArgs.length);
             }
-
-            if (args.length != showClosure.getMaximumNumberOfParameters()) {
-                throw new IllegalArgumentException("Expected " + showClosure.getMaximumNumberOfParameters() + " arguments, but got " + args.length);
-            }
-            showClosure.call(args);
+            showClosure.call(showArgs);
         }
         return actions;
     }
@@ -204,6 +212,148 @@ public abstract class TimecodeDsl extends Script {
         return runningShows().stream().anyMatch(show -> show.getName().equals(showName));
     }
 
+
+    /*
+     * Version-agnostic helpers (tracker #31). The same show file runs on Paper 1.12.2 and 1.21.x: names and data
+     * types that changed between versions are translated for the running server. Guide: docs/version-agnostic-helpers.md
+     * in the technicians' shows repo.
+     */
+
+    /** The running server's particle for a 1.12 name (REDSTONE), a 1.20.5+ name / id (dust), or a Particle. */
+    public Particle particleType(Object name) {
+        return ParticleCompat.resolve(name);
+    }
+
+    public void particle(Object target, Object type, Location loc) {
+        particle(target, type, loc.getX(), loc.getY(), loc.getZ(), 1, 0, 0, 0, 0, null);
+    }
+
+    public void particle(Object target, Object type, Location loc, int count, double dx, double dy, double dz, double extra) {
+        particle(target, type, loc.getX(), loc.getY(), loc.getZ(), count, dx, dy, dz, extra, null);
+    }
+
+    public void particle(Object target, Object type, Location loc, int count, double dx, double dy, double dz, double extra, Object data) {
+        particle(target, type, loc.getX(), loc.getY(), loc.getZ(), count, dx, dy, dz, extra, data);
+    }
+
+    public void particle(Object target, Object type, double x, double y, double z) {
+        particle(target, type, x, y, z, 1, 0, 0, 0, 0, null);
+    }
+
+    public void particle(Object target, Object type, double x, double y, double z, int count) {
+        particle(target, type, x, y, z, count, 0, 0, 0, 0, null);
+    }
+
+    public void particle(Object target, Object type, double x, double y, double z, int count, double dx, double dy, double dz) {
+        particle(target, type, x, y, z, count, dx, dy, dz, 0, null);
+    }
+
+    public void particle(Object target, Object type, double x, double y, double z, int count, double dx, double dy, double dz, double extra) {
+        particle(target, type, x, y, z, count, dx, dy, dz, extra, null);
+    }
+
+    /**
+     * Like {@code world.spawnParticle(type, x, y, z, count, dx, dy, dz, extra, data)} on any server version.
+     * {@code target} is a World (everyone nearby sees it) or a Player (only they do). Block particles take a block
+     * spec ("95:1", "water"), dust takes a colour (0xRRGGBB, "#RRGGBB", or [r, g, b] / [r:, g:, b:] of 0-1 fractions).
+     */
+    public void particle(Object target, Object type, double x, double y, double z, int count, double dx, double dy, double dz, double extra, Object data) {
+        ParticleCompat.spawn(target, type, x, y, z, count, dx, dy, dz, extra, data);
+    }
+
+    /** One coloured dust particle (1.12 REDSTONE / 1.21 DUST) at x, y, z. */
+    public void dust(Object target, double x, double y, double z, Object color) {
+        ParticleCompat.dust(target, x, y, z, 1, 0, 0, 0, ParticleCompat.color(color), 1.0f);
+    }
+
+    /** One coloured dust particle; {@code size} only has an effect on 1.13+ (1.12 dust has a fixed size). */
+    public void dust(Object target, double x, double y, double z, Object color, double size) {
+        ParticleCompat.dust(target, x, y, z, 1, 0, 0, 0, ParticleCompat.color(color), (float) size);
+    }
+
+    public void dust(Object target, Location loc, Object color) {
+        dust(target, loc.getX(), loc.getY(), loc.getZ(), color);
+    }
+
+    public void dust(Object target, Location loc, Object color, double size) {
+        dust(target, loc.getX(), loc.getY(), loc.getZ(), color, size);
+    }
+
+    /** {@code count} dust particles spread around x, y, z by the offsets (Gaussian, like spawnParticle). */
+    public void dust(Object target, double x, double y, double z, int count, double dx, double dy, double dz, Object color) {
+        ParticleCompat.dust(target, x, y, z, count, dx, dy, dz, ParticleCompat.color(color), 1.0f);
+    }
+
+    public void dust(Object target, double x, double y, double z, int count, double dx, double dy, double dz, Object color, double size) {
+        ParticleCompat.dust(target, x, y, z, count, dx, dy, dz, ParticleCompat.color(color), (float) size);
+    }
+
+    /** A Bukkit Color from 0xRRGGBB, "#RRGGBB", a colour name, or [r, g, b] / [r:, g:, b:] of 0-1 fractions. */
+    public Color color(Object spec) {
+        return ParticleCompat.color(spec);
+    }
+
+    /** Block particle data for this server (MaterialData on 1.12, BlockData on 1.13+) from "95:1", "water", ... */
+    public Object blockData(Object spec) {
+        return BlockSpec.particleData(spec);
+    }
+
+    /** The running server's Material for a name, "name:data", a 1.12 id or "id:data"; null if unknown. */
+    public Material material(Object spec) {
+        return MaterialSpec.material(spec);
+    }
+
+    /**
+     * An item stack from a 1.12-style description: {@code item("DIAMOND_HOE", 1, 5)} keeps damage 5 (tools and
+     * armour), {@code item("WOOL", 1, 14)} / {@code item("35:14")} is red wool on both versions (the damage value
+     * picks the variant). Null if the material is unknown. Use this instead of
+     * {@code new ItemStack(material(name), 1, (short) damage)}, which loses the variant on 1.13+.
+     */
+    public ItemStack item(Object spec, int amount, int damage) {
+        return ItemCompat.item(spec, amount, damage);
+    }
+
+    public ItemStack item(Object spec, int amount) {
+        return ItemCompat.item(spec, amount, 0);
+    }
+
+    public ItemStack item(Object spec) {
+        return ItemCompat.item(spec, 1, 0);
+    }
+
+    /** The running server's enchantment for a 1.12 name (DURABILITY) or a 1.21 name / key (unbreaking). */
+    public Enchantment enchantment(Object name) {
+        return ItemCompat.enchantment(name);
+    }
+
+    /** A player head with a custom texture (base64 value, textures.minecraft.net URL, or hash). */
+    public ItemStack customSkull(String texture) {
+        return ItemCompat.customSkull(null, texture);
+    }
+
+    /** A player head with a custom texture and an explicit profile UUID. */
+    public ItemStack customSkull(String uuid, String texture) {
+        return ItemCompat.customSkull(uuid, texture);
+    }
+
+    /** [uuid:, name:, texture:] of a player-head item or placed head block, or null. */
+    public Map<String, String> skullTexture(Object itemOrBlock) {
+        return ItemCompat.skullTexture(itemOrBlock);
+    }
+
+    public boolean isPlayerHead(ItemStack item) {
+        return ItemCompat.isPlayerHead(item);
+    }
+
+    /** True on a pre-1.13 server (1.12.2). Prefer the helpers above; branch on this only as a last resort. */
+    public boolean isLegacyServer() {
+        return ServerVersion.LEGACY;
+    }
+
+    /** The running Minecraft version, e.g. "1.12.2" or "1.21.4". */
+    public String minecraftVersion() {
+        return ServerVersion.CURRENT.toString();
+    }
 
     // this is used internally to wrap around the text of the script, end-users shouldn't be told about it
     public Multimap<Integer, ShowAction> getActions() {

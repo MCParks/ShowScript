@@ -7,12 +7,14 @@ plugins {
     id 'maven-publish'
 
     // git commit hash in version
-    id 'com.palantir.git-version' version "0.12.3"
+    id 'com.palantir.git-version' version "4.0.0"
 
-    id "com.github.johnrengelman.shadow" version "8.0.0"
+    id "com.gradleup.shadow" version "9.2.2"
 }
 
 shadowJar {
+    // Shadow 9 marks the jar Multi-Release when a dependency is; the 8.0 build didn't, so keep the same class loading
+    addMultiReleaseAttribute = false
     relocate 'cloud.commandframework', 'us.mcparks.showscript.cloud.commandframework'
     relocate 'co.aikar.timings.lib', 'us.mcparks.showscript.aikar.timings.lib'
     relocate 'org.codemc.worldguardwrapper', 'us.mcparks.showscript.codemc.worldguardwrapper'
@@ -25,6 +27,11 @@ sourceSets {
         }
         resources {
             srcDirs "res"
+        }
+    }
+    test {
+        java {
+            srcDirs "test"
         }
     }
 }
@@ -69,6 +76,11 @@ repositories {
         url = uri('https://repo.codemc.org/repository/maven-public/')
     }
 
+    // paper-api (test263 only)
+    maven {
+        url = uri('https://repo.papermc.io/repository/maven-public/')
+    }
+
 }
 
 dependencies {
@@ -77,7 +89,9 @@ dependencies {
     compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.4-SNAPSHOT'
     compileOnly 'com.sk89q.worldguard:worldguard-legacy:6.2'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.12'
+    // cloud-brigadier's classes carry type annotations on Brigadier types; javac 25 must load those types (the test263 CI job compiles main on JDK 25). Compile only: Paper provides Brigadier, nothing is shaded.
+    compileOnly 'com.mojang:brigadier:1.0.18'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.25'
     implementation 'cloud.commandframework:cloud-paper:1.8.3'
     implementation 'cloud.commandframework:cloud-annotations:1.8.3'
     implementation 'cloud.commandframework:cloud-minecraft-extras:1.8.3'
@@ -86,14 +100,23 @@ dependencies {
     implementation "co.aikar:minecraft-timings:1.0.4"
     implementation "org.codemc.worldguardwrapper:worldguardwrapper:1.2.1-SNAPSHOT"
 
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT' // Compat tests run without a server
+    testImplementation 'org.mockito:mockito-core:4.11.0' // Scheduler tests mock the Bukkit server
+
 }
 
 group = 'us.mcparks'
 version = '1.12-1-' + gitVersion()
 description = 'ShowScript'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
-archivesBaseName = 'showscript'
+// Java 8 bytecode and Java 8 class library: the 1.12.2 servers run Java 8. Gradle itself runs on JDK 17+ (Gradle 9).
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
+    options.compilerArgs += ['-Xlint:-options'] // javac 21+ warns that release 8 is obsolete
+}
+base {
+    archivesName = 'showscript'
+}
 shadowJar.archiveFileName = "showscript.jar"
 build.dependsOn(shadowJar)
 jar.enabled = false
@@ -143,3 +166,43 @@ publishing {
     }
 }
 
+test {
+    // ServerVersion reads the server version once per JVM; tests that mock a 1.12.2 server need their own JVM.
+    forkEvery = 1
+}
+
+// ---- Paper 26.3 API check ----
+// The compat helpers compile against the 1.12 API and reach newer API by name. test263 runs them on a JDK 25 JVM with
+// only paper-api 26.3 (class file 69) on the class path, so a lookup or particle data type that changed after 1.21.4
+// fails here instead of on the Epic Universe server. Gradle runs on JDK 21; the JDK 25 launcher comes from a toolchain
+// (any installed JDK/JRE 25 that Gradle detects, or -Dorg.gradle.java.installations.paths=/path/to/jdk-25). Not part of
+// `check`, so a machine without Java 25 can still build: run `./gradlew test263` (CI runs it in its own job).
+sourceSets {
+    test263 {
+        java { srcDirs = ['test263'] }
+        resources { srcDirs = [] }
+    }
+}
+
+configurations {
+    test263RuntimeClasspath {
+        // paper-api 26.x declares "JVM 25" in its Gradle metadata
+        attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
+}
+
+dependencies {
+    test263CompileOnly 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT' // same API as main; runs against 26.3
+    test263Implementation 'junit:junit:4.13.2'
+    test263Implementation files(sourceSets.main.output.classesDirs) // not main's runtime deps: adventure 4 would shadow paper-api's adventure
+    test263RuntimeOnly 'io.papermc.paper:paper-api:26.3.build.249-stable'
+}
+
+def test263Task = tasks.register('test263', Test) {
+    description = 'Runs the compat helpers against paper-api 26.3 on a Java 25 JVM.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test263.output.classesDirs
+    classpath = sourceSets.test263.runtimeClasspath
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+    dependsOn tasks.named('classes')
+}

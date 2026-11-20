@@ -1,0 +1,136 @@
+# Suggested replacements for 1.12.2 API names that are gone on 1.21.4.
+# owner	old name	1.21.4 replacement / advice
+# Suggestions only: check each one; some need a data-type change too. Names that exist on both versions are
+# preferred where they exist (e.g. ItemMeta#setUnbreakable). ShowScript helpers from issue #31 work on both.
+org.bukkit.Particle	BLOCK_DUST	BLOCK (data must be BlockData, e.g. Material.X.createBlockData(); MaterialData no longer works)
+org.bukkit.Particle	BLOCK_CRACK	BLOCK (data must be BlockData)
+org.bukkit.Particle	FALLING_DUST	FALLING_DUST (data must be BlockData, not MaterialData)
+org.bukkit.Particle	ITEM_CRACK	ITEM (data: ItemStack)
+org.bukkit.Particle	REDSTONE	DUST (needs new Particle.DustOptions(Color, size) as data)
+org.bukkit.Particle	FIREWORKS_SPARK	FIREWORK
+org.bukkit.Particle	EXPLOSION_NORMAL	POOF
+org.bukkit.Particle	EXPLOSION_LARGE	EXPLOSION
+org.bukkit.Particle	EXPLOSION_HUGE	EXPLOSION_EMITTER
+org.bukkit.Particle	WATER_BUBBLE	BUBBLE
+org.bukkit.Particle	WATER_SPLASH	SPLASH
+org.bukkit.Particle	WATER_WAKE	FISHING
+org.bukkit.Particle	WATER_DROP	RAIN
+org.bukkit.Particle	SUSPENDED	UNDERWATER
+org.bukkit.Particle	SUSPENDED_DEPTH	UNDERWATER
+org.bukkit.Particle	CRIT_MAGIC	ENCHANTED_HIT
+org.bukkit.Particle	SMOKE_NORMAL	SMOKE
+org.bukkit.Particle	SMOKE_LARGE	LARGE_SMOKE
+org.bukkit.Particle	SPELL	EFFECT
+org.bukkit.Particle	SPELL_INSTANT	INSTANT_EFFECT
+org.bukkit.Particle	SPELL_MOB	ENTITY_EFFECT (data: Color)
+org.bukkit.Particle	SPELL_MOB_AMBIENT	ENTITY_EFFECT (data: Color)
+org.bukkit.Particle	SPELL_WITCH	WITCH
+org.bukkit.Particle	DRIP_WATER	DRIPPING_WATER
+org.bukkit.Particle	DRIP_LAVA	DRIPPING_LAVA
+org.bukkit.Particle	VILLAGER_ANGRY	ANGRY_VILLAGER
+org.bukkit.Particle	VILLAGER_HAPPY	HAPPY_VILLAGER
+org.bukkit.Particle	TOWN_AURA	MYCELIUM
+org.bukkit.Particle	ENCHANTMENT_TABLE	ENCHANT
+org.bukkit.Particle	SNOWBALL	ITEM_SNOWBALL
+org.bukkit.Particle	SNOW_SHOVEL	ITEM_SNOWBALL
+org.bukkit.Particle	SLIME	ITEM_SLIME
+org.bukkit.Particle	MOB_APPEARANCE	ELDER_GUARDIAN
+org.bukkit.Particle	TOTEM	TOTEM_OF_UNDYING
+org.bukkit.Particle	BARRIER	BLOCK_MARKER (data: Material.BARRIER.createBlockData())
+org.bukkit.Particle	FOOTSTEP	(removed in 1.13; no replacement)
+org.bukkit.potion.PotionEffectType	SLOW	SLOWNESS
+org.bukkit.potion.PotionEffectType	FAST_DIGGING	HASTE
+org.bukkit.potion.PotionEffectType	SLOW_DIGGING	MINING_FATIGUE
+org.bukkit.potion.PotionEffectType	INCREASE_DAMAGE	STRENGTH
+org.bukkit.potion.PotionEffectType	HEAL	INSTANT_HEALTH
+org.bukkit.potion.PotionEffectType	HARM	INSTANT_DAMAGE
+org.bukkit.potion.PotionEffectType	JUMP	JUMP_BOOST
+org.bukkit.potion.PotionEffectType	CONFUSION	NAUSEA
+org.bukkit.potion.PotionEffectType	DAMAGE_RESISTANCE	RESISTANCE
+org.bukkit.enchantments.Enchantment	PROTECTION_ENVIRONMENTAL	PROTECTION
+org.bukkit.enchantments.Enchantment	PROTECTION_FIRE	FIRE_PROTECTION
+org.bukkit.enchantments.Enchantment	PROTECTION_FALL	FEATHER_FALLING
+org.bukkit.enchantments.Enchantment	PROTECTION_EXPLOSIONS	BLAST_PROTECTION
+org.bukkit.enchantments.Enchantment	PROTECTION_PROJECTILE	PROJECTILE_PROTECTION
+org.bukkit.enchantments.Enchantment	OXYGEN	RESPIRATION
+org.bukkit.enchantments.Enchantment	WATER_WORKER	AQUA_AFFINITY
+org.bukkit.enchantments.Enchantment	DAMAGE_ALL	SHARPNESS
+org.bukkit.enchantments.Enchantment	DAMAGE_UNDEAD	SMITE
+org.bukkit.enchantments.Enchantment	DAMAGE_ARTHROPODS	BANE_OF_ARTHROPODS
+org.bukkit.enchantments.Enchantment	LOOT_BONUS_MOBS	LOOTING
+org.bukkit.enchantments.Enchantment	LOOT_BONUS_BLOCKS	FORTUNE
+org.bukkit.enchantments.Enchantment	DIG_SPEED	EFFICIENCY
+org.bukkit.enchantments.Enchantment	DURABILITY	UNBREAKING
+org.bukkit.enchantments.Enchantment	ARROW_DAMAGE	POWER
+org.bukkit.enchantments.Enchantment	ARROW_KNOCKBACK	PUNCH
+org.bukkit.enchantments.Enchantment	ARROW_FIRE	FLAME
+org.bukkit.enchantments.Enchantment	ARROW_INFINITE	INFINITY
+org.bukkit.enchantments.Enchantment	LUCK	LUCK_OF_THE_SEA
+org.bukkit.entity.EntityType	DROPPED_ITEM	ITEM
+org.bukkit.entity.EntityType	FIREWORK	FIREWORK_ROCKET
+org.bukkit.entity.EntityType	PRIMED_TNT	TNT
+org.bukkit.entity.EntityType	LIGHTNING	LIGHTNING_BOLT
+org.bukkit.entity.EntityType	ENDER_CRYSTAL	END_CRYSTAL
+org.bukkit.entity.EntityType	SNOWMAN	SNOW_GOLEM
+org.bukkit.entity.EntityType	MUSHROOM_COW	MOOSHROOM
+org.bukkit.entity.EntityType	PIG_ZOMBIE	ZOMBIFIED_PIGLIN
+org.bukkit.entity.EntityType	LEASH_HITCH	LEASH_KNOT
+org.bukkit.entity.EntityType	SPLASH_POTION	POTION
+org.bukkit.entity.EntityType	THROWN_EXP_BOTTLE	EXPERIENCE_BOTTLE
+org.bukkit.entity.EntityType	ENDER_SIGNAL	EYE_OF_ENDER
+org.bukkit.entity.EntityType	FISHING_HOOK	FISHING_BOBBER
+org.bukkit.entity.EntityType	MINECART_COMMAND	COMMAND_BLOCK_MINECART
+org.bukkit.entity.EntityType	MINECART_CHEST	CHEST_MINECART
+org.bukkit.entity.EntityType	MINECART_FURNACE	FURNACE_MINECART
+org.bukkit.entity.EntityType	MINECART_TNT	TNT_MINECART
+org.bukkit.entity.EntityType	MINECART_HOPPER	HOPPER_MINECART
+org.bukkit.entity.EntityType	MINECART_MOB_SPAWNER	SPAWNER_MINECART
+org.bukkit.Material	STATIONARY_WATER	WATER
+org.bukkit.Material	STATIONARY_LAVA	LAVA
+org.bukkit.Material	SKULL_ITEM	PLAYER_HEAD (data 3), SKELETON_SKULL (0), WITHER_SKELETON_SKULL (1), ZOMBIE_HEAD (2), CREEPER_HEAD (4), DRAGON_HEAD (5)
+org.bukkit.Material	SKULL	PLAYER_HEAD / PLAYER_WALL_HEAD (block)
+org.bukkit.Material	WOOL	<COLOR>_WOOL, e.g. WHITE_WOOL
+org.bukkit.Material	STAINED_GLASS	<COLOR>_STAINED_GLASS
+org.bukkit.Material	STAINED_GLASS_PANE	<COLOR>_STAINED_GLASS_PANE
+org.bukkit.Material	STAINED_CLAY	<COLOR>_TERRACOTTA
+org.bukkit.Material	CONCRETE	<COLOR>_CONCRETE
+org.bukkit.Material	CONCRETE_POWDER	<COLOR>_CONCRETE_POWDER
+org.bukkit.Material	CARPET	<COLOR>_CARPET
+org.bukkit.Material	INK_SACK	INK_SAC / <COLOR>_DYE
+org.bukkit.Material	COMMAND	COMMAND_BLOCK
+org.bukkit.Material	COMMAND_CHAIN	CHAIN_COMMAND_BLOCK
+org.bukkit.Material	COMMAND_REPEATING	REPEATING_COMMAND_BLOCK
+org.bukkit.Material	WALL_SIGN	OAK_WALL_SIGN
+org.bukkit.Material	SIGN_POST	OAK_SIGN
+org.bukkit.Material	SIGN	OAK_SIGN
+org.bukkit.Material	WOOD	OAK_PLANKS (or <WOOD>_PLANKS)
+org.bukkit.Material	LOG	OAK_LOG (or <WOOD>_LOG)
+org.bukkit.Material	LEAVES	OAK_LEAVES (or <WOOD>_LEAVES)
+org.bukkit.Material	WOOD_STEP	OAK_SLAB
+org.bukkit.Material	STEP	STONE_SLAB / SMOOTH_STONE_SLAB
+org.bukkit.Material	DOUBLE_STEP	SMOOTH_STONE (double slab = slab with type=double)
+org.bukkit.Material	SMOOTH_BRICK	STONE_BRICKS
+org.bukkit.Material	THIN_GLASS	GLASS_PANE
+org.bukkit.Material	IRON_FENCE	IRON_BARS
+org.bukkit.Material	FENCE	OAK_FENCE
+org.bukkit.Material	REDSTONE_LAMP_OFF	REDSTONE_LAMP
+org.bukkit.Material	REDSTONE_LAMP_ON	REDSTONE_LAMP (lit=true)
+org.bukkit.Material	REDSTONE_TORCH_ON	REDSTONE_TORCH
+org.bukkit.Material	WATCH	CLOCK
+org.bukkit.Material	FIREWORK	FIREWORK_ROCKET
+org.bukkit.Material	FIREWORK_CHARGE	FIREWORK_STAR
+org.bukkit.Material	BANNER	<COLOR>_BANNER
+org.bukkit.Material	MONSTER_EGG	<MOB>_SPAWN_EGG
+org.bukkit.Material	DIAMOND_SPADE	DIAMOND_SHOVEL
+org.bukkit.Material	WOOD_SWORD	WOODEN_SWORD
+org.bukkit.Material	GOLD_SWORD	GOLDEN_SWORD
+org.bukkit.Material	BOOK_AND_QUILL	WRITABLE_BOOK
+org.bukkit.Material	EXP_BOTTLE	EXPERIENCE_BOTTLE
+org.bukkit.Material	getMaterial(int)	numeric ids are gone since 1.13: use a Material name (Material.matchMaterial("..."))
+org.bukkit.Material	getId	numeric ids are gone since 1.13: use Material names
+org.bukkit.block.Block	setTypeId	Block#setType(Material) / setBlockData
+org.bukkit.block.Block	setTypeIdAndData	Block#setBlockData(Material.X.createBlockData(...))
+org.bukkit.block.Block	getTypeId	Block#getType()
+org.bukkit.block.Block	setData	Block#setBlockData(BlockData)
+org.bukkit.inventory.meta.ItemMeta	spigot	ItemMeta#setUnbreakable(boolean) works on 1.12.2 and 1.21.4
+org.bukkit.inventory.meta.SkullMeta	setOwner	SkullMeta#setOwningPlayer(OfflinePlayer) or Paper setPlayerProfile (both versions)

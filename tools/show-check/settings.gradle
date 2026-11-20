@@ -1,0 +1,2 @@
+// Standalone build: the show checker is not part of the ShowsRebuild plugin jar.
+rootProject.name = 'show-check'

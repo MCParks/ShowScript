@@ -16,6 +16,11 @@ public class ShowStopEvent extends Event {
         return show.getShowTaskId();
     }
 
+    /** True if the show stopped because one of its actions threw, not because it ended or was cancelled. */
+    public boolean endedWithError() {
+        return show.endedWithError();
+    }
+
     public ShowScheduler getShow() {
         return show;
     }

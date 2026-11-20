@@ -7,3 +7,12 @@ debug-logging: true
 # Enable timings - Set to false to disable Aikar's timings
 # Default: true (set to false on 1.20+ to avoid console spam)
 enable-timings: true
+
+# Where /rb, the YAML build/rebuild action and .toaster builds read rebuild files (ryan/1-12-2-to-1-21-4#71).
+# Read at startup; restart the server after changing it.
+#   showsrebuild: this plugin's own code and plugins/ShowsRebuild/Rebuilds, as before.
+#   mcpx: MCPX's rebuild service, rb namespace only (MCPX's rebuilds.legacyRoot). Needs an MCPX with the
+#         rebuild service; otherwise one SEVERE line is logged and this plugin's own code is used.
+# Default: showsrebuild
+rebuilds:
+  backend: showsrebuild

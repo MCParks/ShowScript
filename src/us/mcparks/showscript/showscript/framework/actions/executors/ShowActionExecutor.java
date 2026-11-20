@@ -1,5 +1,6 @@
 package us.mcparks.showscript.showscript.framework.actions.executors;
 
+import us.mcparks.showscript.compat.Compat;
 import us.mcparks.showscript.util.DebugLogger;
 import us.mcparks.showscript.util.Lag;
 /* // <INTERNAL>
@@ -10,6 +11,8 @@ import us.mcparks.showscript.showscript.framework.TimecodeShowConfig;
 import us.mcparks.showscript.showscript.framework.actions.ShowAction;
 import us.mcparks.showscript.showscript.framework.schedulers.TimecodeShowScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.FallingBlock;
@@ -18,6 +21,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.Random;
 
 public abstract class ShowActionExecutor {
@@ -126,14 +130,26 @@ public abstract class ShowActionExecutor {
     @SuppressWarnings("deprecation")
     protected void fountain(Location loc, int id, int damage, Vector velocity, int time) {
         int finalWait = (int) (Lag.getTPS() / 10) * (time);
-        int taskId = Bukkit.getScheduler().runTaskTimer(scheduler.getPlugin(), () -> {
-            FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, id, (byte) damage);
-            fb.setDropItem(false);
-            fb.setVelocity(velocity);
-        }, 1L, 1L).getTaskId();
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                FallingBlock fb;
+                try {
+                    fb = Compat.blocks().spawnFallingBlock(loc, id, (byte) damage);
+                } catch (RuntimeException | LinkageError e) {
+                    // Don't throw every tick for the rest of the fountain: log once and stop it.
+                    cancel();
+                    scheduler.getPlugin().getLogger().log(Level.SEVERE, "fountain " + id + ":" + damage + " at " + loc + " failed; stopping it", e);
+                    return;
+                }
+                if (fb == null) {
+                    return; // unknown block id, already logged by the compat layer
+                }
+                fb.setDropItem(false);
+                fb.setVelocity(velocity);
+            }
+        }.runTaskTimer(scheduler.getPlugin(), 1L, 1L);
 
-        Bukkit.getScheduler().runTaskLater(scheduler.getPlugin(), () -> {
-            Bukkit.getScheduler().cancelTask(taskId);
-        }, finalWait);
+        Bukkit.getScheduler().runTaskLater(scheduler.getPlugin(), task::cancel, finalWait);
     }
 }

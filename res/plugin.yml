@@ -1,5 +1,7 @@
 name: ShowScript
 main: us.mcparks.showscript.Main
+# 1.13+ servers: load as a modern plugin (no legacy Material remapping). 1.12.2 ignores this key.
+api-version: '1.13'
 version: @version@
 description: A programming language developed by MCParks for scheduling commands to run at specified timecodes
 author: RyanHecht_

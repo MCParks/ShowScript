@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'us.mcparks'
+version = '1.0.3'
+
+repositories {
+    mavenCentral()
+}
+
+// Groovy >= 3.0.22 is required to read Java 21 class files (issue #29); 3.0.25 matches ShowsRebuild MR !24.
+// The shows' own classpath (server jar, ShowsRebuild.jar, plugins) is passed at run time, never bundled.
+dependencies {
+    implementation 'org.codehaus.groovy:groovy:3.0.25'
+    implementation 'org.codehaus.groovy:groovy-json:3.0.25'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8          // Java 8 bytecode: the built tool runs on Java 8 or 21 (build it with JDK 17-23, see README)
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'us.mcparks.showcheck.ShowCheck'
+    applicationName = 'show-check'
+}

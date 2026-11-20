@@ -36,7 +36,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -558,11 +560,11 @@ public class RegionShowListener implements Listener {
                 status = Status.SETUP;
                 startSetupShow();
 
-                OneTimeUseListener.<ShowStopEvent>createOneTimeUseListener(ShowStopEvent.class, event -> event.getShow().getName().equals(cfg.setupShow.getShowName()), (event) -> this.setupComplete(), EventPriority.LOWEST);
+                onShowStop(setupShowName(), this::setupComplete, EventPriority.LOWEST);
             } else if (status == Status.CLEANUP) {
                 DebugLogger.log(cfg.region + " (is cleanup)");
 
-                OneTimeUseListener.<ShowStopEvent>createOneTimeUseListener(ShowStopEvent.class, event -> event.getShow().getName().equals(cfg.cleanupShow.getShowName()), (event) -> this.start());
+                onShowStop(cleanupShowName(), event -> this.start(), EventPriority.NORMAL);
             }
         }
 
@@ -574,23 +576,43 @@ public class RegionShowListener implements Listener {
                 
                 stopLoopShows();
                 
-                status = Status.CLEANUP;
-                startCleanupShow();
-                OneTimeUseListener.<ShowStopEvent>createOneTimeUseListener(ShowStopEvent.class, event -> event.getShow().getName().equals(cfg.cleanupShow.getShowName()), (event) -> this.cleanupComplete(), EventPriority.LOWEST);
+                runCleanup();
             } else if (status == Status.SETUP) {
                 DebugLogger.log(cfg.region + " (is setup)");
 
-                OneTimeUseListener.<ShowStopEvent>createOneTimeUseListener(ShowStopEvent.class, event -> event.getShow().getName().equals(cfg.setupShow.getShowName()), (event) -> this.stop(false));
+                onShowStop(setupShowName(), event -> this.stop(false), EventPriority.NORMAL);
 
                 if (force) {
-                    Main.getPlugin(Main.class).cancelShowByName(cfg.setupShow.getShowName());
+                    Main.getPlugin(Main.class).cancelShowByName(setupShowName());
                 }
             
             }
         }
 
+        private void runCleanup() {
+            status = Status.CLEANUP;
+            startCleanupShow();
+            onShowStop(cleanupShowName(), event -> this.cleanupComplete(), EventPriority.LOWEST);
+        }
 
-        private void stopLoopShows() {
+        /** Runs {@code action} once, when the show named {@code showName} next stops. */
+        void onShowStop(String showName, Consumer<ShowStopEvent> action, EventPriority priority) {
+            OneTimeUseListener.<ShowStopEvent>createOneTimeUseListener(ShowStopEvent.class, event -> event.getShow().getName().equals(showName), action, priority);
+        }
+
+        String setupShowName() {
+            return cfg.setupShow.getShowName();
+        }
+
+        String cleanupShowName() {
+            return cfg.cleanupShow.getShowName();
+        }
+
+        Logger logger() {
+            return Bukkit.getLogger();
+        }
+
+        void stopLoopShows() {
             for (TimecodeShow show : cfg.loopShows) {
                 if (!show.isEmpty()) {
                     Main.getPlugin(Main.class).cancelShowByName(show.getShowName());
@@ -598,10 +620,17 @@ public class RegionShowListener implements Listener {
             }
         }
 
-        private void setupComplete() {
+        private void setupComplete(ShowStopEvent event) {
             DebugLogger.log(cfg.region + " Setup done.");
 
-            if (status == Status.SETUP) {
+            if (status == Status.SETUP && event.endedWithError()) {
+                // A setup show that failed part-way leaves the region half set up. Don't start the loop on top of
+                // it: run the cleanup show so the region returns to idle. Players who enter later start it again.
+                logger().warning("Region show " + cfg.name + " (region " + cfg.region + "): setup show "
+                        + setupShowName() + " ended with an error, so its loop is not started; running cleanup show "
+                        + cleanupShowName() + " to return the region to idle");
+                runCleanup();
+            } else if (status == Status.SETUP) {
                 DebugLogger.log("Starting to loop " + cfg.region);
 
                 status = Status.LOOP;
@@ -630,7 +659,7 @@ public class RegionShowListener implements Listener {
             return  regionPlayerCount++;
         }
 
-        private void startSetupShow() {
+        void startSetupShow() {
             try {
                 Main.getPlugin(Main.class).timecodeExecutor.startShow(cfg.setupShow.clone(), Bukkit.getConsoleSender(), false, 0, false);
             } catch (Exception ex) {
@@ -638,7 +667,7 @@ public class RegionShowListener implements Listener {
             }
         }
 
-        private void startCleanupShow() {
+        void startCleanupShow() {
             try {
                 Main.getPlugin(Main.class).timecodeExecutor.startShow(cfg.cleanupShow.clone(), Bukkit.getConsoleSender(), false, 0, false);
             } catch (Exception ex) {
@@ -646,7 +675,7 @@ public class RegionShowListener implements Listener {
             }
         }
 
-        private void startLoopShows() {
+        void startLoopShows() {
             for (TimecodeShow show : cfg.loopShows) {
                 try {
                     Main.getPlugin(Main.class).timecodeExecutor.startShow(show.clone(), Bukkit.getConsoleSender(), false, 0, false);

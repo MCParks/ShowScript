@@ -17,6 +17,11 @@ public interface ShowScheduler extends Runnable {
 
   public void restart();
 
+  /** True if the show was stopped because one of its actions threw. A normal end or a cancel returns false. */
+  default boolean endedWithError() {
+    return false;
+  }
+
 
   default MCTiming getTiming() {
     if (Main.timingManager != null) {

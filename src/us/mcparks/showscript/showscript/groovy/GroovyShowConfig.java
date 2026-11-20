@@ -137,7 +137,8 @@ public class GroovyShowConfig extends TimecodeShowConfig {
 
     @Override
     public TimecodeShow<? extends TimecodeShowConfig> createShow(long startTick, ShowArgs args) {
-        if (args.equals(this.args)) {
+        // null: started without arguments (show startasync passes none), so use this config as created
+        if (args == null || args.equals(this.args)) {
             return new GroovyShow(this, startTick);
         } else {
             return new GroovyShow((GroovyShowConfig) this.cloneWithArgs(args), startTick);

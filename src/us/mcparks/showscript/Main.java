@@ -24,6 +24,7 @@ import us.mcparks.showscript.event.show.ShowStartEvent;
 import us.mcparks.showscript.event.show.ShowStopEvent;
 import us.mcparks.showscript.showscript.framework.schedulers.ShowScheduler;
 import us.mcparks.showscript.showscript.framework.TimecodeShowExecutor;
+import us.mcparks.showscript.compat.Compat;
 import us.mcparks.showscript.config.Configuration;
 import us.mcparks.showscript.showscript.groovy.GroovyShowConfig;
 import us.mcparks.showscript.util.DebugLogger;
@@ -83,12 +84,19 @@ public class Main extends JavaPlugin implements Listener {
     
     // Set debug logging based on configuration
     DebugLogger.setLogging(configuration.isDebugLoggingEnabled());
+
+    // Version-compatibility layer (one JAR for 1.12.2 and 1.21.x): pick implementations now so problems show at startup
+    Compat.init(getLogger());
     
     setupCloud();
 
     // Internally, this plugin also handles a legacy command. Ask Ryan for the story on why.
     /* // <INTERNAL>
     this.rbFolder.mkdir();
+    // rebuilds.backend: "showsrebuild" (default, this plugin's own code) or "mcpx" (MCPX's rebuild service, rb
+    // namespace; ryan/1-12-2-to-1-21-4#71). MCPX enables first (softdepend).
+    RebuildBackend.install(RebuildBackend.select(getConfig().getString(RebuildBackend.SETTING, RebuildBackend.SHOWSREBUILD),
+        rbFolder, Bukkit.getPluginManager().getPlugin("MCPX"), getLogger()));
     getCommand("rb").setExecutor(new Rebuild());
     // </INTERNAL> */
     Shows commandHandler = new Shows(this, this);
@@ -124,7 +132,9 @@ public class Main extends JavaPlugin implements Listener {
 
   @Override
   public void onDisable() {
-    regionShowListener.unloadRegionShows();
+    if (regionShowListener != null) { // null if onEnable failed before creating it
+      regionShowListener.unloadRegionShows();
+    }
   }
 
   private void setupCloud() {
@@ -212,6 +222,16 @@ public class Main extends JavaPlugin implements Listener {
       activeShows.remove(show);
     }
     return count;
+  }
+
+  /**
+   * Cancel one show instance: stops its task, fires {@link ShowStopEvent} and removes it from the active shows.
+   * Unlike {@link #cancelShowById(int)}, this also works before the show has been assigned its id.
+   * @return true if the show was in the active shows.
+   */
+  public boolean cancelShow(ShowScheduler show) {
+    stopShow(show);
+    return activeShows.remove(show);
   }
 
   public void stopShow(ShowScheduler show) {

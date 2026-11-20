@@ -41,7 +41,7 @@ public class ShowArgs {
         if (args == null && !isEmpty()) {
             args = evaluateArgs(argsString, config);
         }
-        return args;
+        return args == null ? new Object[0] : args; // empty args: zero arguments, not null
     }
 
 
