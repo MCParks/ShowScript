@@ -58,15 +58,20 @@ public class RegionShowListener implements Listener {
     Map<HashCode, String> schemaHashes = new HashMap<>();
 
     public RegionShowListener(Main main) {
+        this();
         this.main = main;
         main.getServer().getPluginManager().registerEvents(this, main);
-        regionMap = MultimapBuilder.hashKeys().hashSetValues().build();
-        schemaRegionMap = MultimapBuilder.hashKeys().hashSetValues().build();
-        ignoredSchemas = MultimapBuilder.hashKeys().hashSetValues().build();
         loadRegionShows();
     }
 
-    private void loadRegionShows() {
+    /** Empty maps only: registers no listener and loads nothing (tests). */
+    RegionShowListener() {
+        regionMap = MultimapBuilder.hashKeys().hashSetValues().build();
+        schemaRegionMap = MultimapBuilder.hashKeys().hashSetValues().build();
+        ignoredSchemas = MultimapBuilder.hashKeys().hashSetValues().build();
+    }
+
+    void loadRegionShows() {
         System.out.println("Loading region shows...");
         loadRegionShows(Main.getPlugin(Main.class).fs.toPath());
     }
@@ -278,16 +283,44 @@ public class RegionShowListener implements Listener {
     }
 
 
+    /**
+     * Stops every loaded region show with {@code stop(true)} (a looping region runs its cleanup show) and forgets them
+     * all. The instances are copied out and the maps cleared first: removing entries from {@code regionMap} while
+     * iterating it threw a ConcurrentModificationException after the first show (ryan/1-12-2-to-1-21-4#267).
+     */
     public void unloadRegionShows() {
-        for (String key : regionMap.keySet()) {
-            for (RegionShowInstance instance : regionMap.get(key)) {
+        for (RegionShowInstance instance : takeAllInstances()) {
+            try {
                 instance.stop(true);
-                regionMap.remove(key, instance);
-                schemaRegionMap.remove(instance.cfg.name, key);
+            } catch (RuntimeException ex) {
+                logger().log(Level.WARNING, "Error stopping region show " + instance.cfg.name + " (region " + instance.cfg.region + ")", ex);
             }
         }
-        schemaRegionMap.clear();
+    }
+
+    /**
+     * Plugin disable: forgets every region show without starting anything. The plugin is already disabled here, so a
+     * cleanup show or a one-time listener could not be scheduled or registered (Bukkit throws
+     * IllegalPluginAccessException), and after onDisable Bukkit cancels the plugin's running show tasks and unregisters
+     * its listeners, the region shows' one-time listeners included. The instances are only marked idle.
+     */
+    public void shutdownRegionShows() {
+        for (RegionShowInstance instance : takeAllInstances()) {
+            instance.status = RegionShowInstance.Status.IDLE;
+        }
+    }
+
+    /** Every active instance, with all three maps (ignored schemas too) cleared before the caller touches them. */
+    private List<RegionShowInstance> takeAllInstances() {
+        List<RegionShowInstance> instances = new ArrayList<>(regionMap.values());
         regionMap.clear();
+        schemaRegionMap.clear();
+        ignoredSchemas.clear();
+        return instances;
+    }
+
+    Logger logger() {
+        return Bukkit.getLogger();
     }
 
     public void reloadRegionShows() {

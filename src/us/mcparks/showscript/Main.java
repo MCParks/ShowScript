@@ -133,7 +133,7 @@ public class Main extends JavaPlugin implements Listener {
   @Override
   public void onDisable() {
     if (regionShowListener != null) { // null if onEnable failed before creating it
-      regionShowListener.unloadRegionShows();
+      regionShowListener.shutdownRegionShows();
     }
   }
 
